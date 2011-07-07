@@ -1,0 +1,6 @@
+<h1><{$smarty.const._MN_TWEETBOMB_CAMPAIGNS_H1}></h1>
+<p><{$smarty.const._MN_TWEETBOMB_CAMPAIGNS_P}></p>
+<div style="float:right; height: 45px; clear:both;"><{$pagenav}></div>
+<{foreach item=campaign from=$campaigns}>
+	<{includeq file="db:twitterbomb_campaign_item.html" campaign=$campaign}>
+<{/foreach}>
