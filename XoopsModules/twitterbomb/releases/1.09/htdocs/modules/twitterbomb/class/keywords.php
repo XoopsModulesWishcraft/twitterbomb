@@ -184,6 +184,8 @@ class TwitterbombKeywordsHandler extends XoopsPersistableObjectHandler
     		else {
 	    		if (is_object($ret))
 	    			return trim($ret->getVar('keyword'));
+	    		else 
+	    			return '';
     		}
     	}
     }

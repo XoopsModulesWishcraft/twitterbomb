@@ -12,7 +12,7 @@
 	$cid = isset($_REQUEST['cid'])?$_REQUEST['cid']:'0';
 	$catid = isset($_REQUEST['catid'])?$_REQUEST['catid']:'0';
 	
-	if ($GLOBALS['xoopsModuleConfig']['htaccess']) {
+	if ($GLOBALS['xoopsModuleConfig']['htaccess']&&empty($_POST)) {
 		$url = XOOPS_URL.'/'.$GLOBALS['xoopsModuleConfig']['baseurl'].'/'.$op.','.$fct.','.$start.','.$limit.','.$cid.','.$catid.$GLOBALS['xoopsModuleConfig']['endofurl'];
 		if (strpos($url, $_SERVER['REQUEST_URI'])==0) {
 			header( "HTTP/1.1 301 Moved Permanently" ); 
