@@ -82,9 +82,9 @@ if (!function_exists('twitterbomb_get_rss')) {
 			if (strlen($username)>0) {
 				$ret[$c]['title'] = '@'.$username.' '.twitterbomb_TweetString($sentence, $GLOBALS['xoopsModuleConfig']['aggregate'], $GLOBALS['xoopsModuleConfig']['wordlength']);	  
 				if ($GLOBALS['xoopsModuleConfig']['htaccess']==false)
-					$ret[$c]['link'] = XOOPS_URL.'/modules/twitterbomb/go.php?cid='.$cid.'&catid='.$catid.'&uri='.urlencode(str_replace(array('#', '&'), '', sprintf($url, urlencode($sentence))));
+					$ret[$c]['link'] = XOOPS_URL.'/modules/twitterbomb/go.php?cid='.$cid.'&catid='.$catid.'&uri='.urlencode( sprintf($url, urlencode(str_replace(array('#', '&'), '',$sentence))));
 				else 
-					$ret[$c]['link'] = XOOPS_URL.'/'.$GLOBALS['xoopsModuleConfig']['baseurl'].'/go'.$GLOBALS['xoopsModuleConfig']['endofurl'].'?cid='.$cid.'&catid='.$catid.'&uri='.urlencode(str_replace(array('#', '&'), '', sprintf($url, urlencode($sentence))));
+					$ret[$c]['link'] = XOOPS_URL.'/'.$GLOBALS['xoopsModuleConfig']['baseurl'].'/go'.$GLOBALS['xoopsModuleConfig']['endofurl'].'?cid='.$cid.'&catid='.$catid.'&uri='.urlencode(sprintf($url, urlencode(str_replace(array('#', '&'), '',$sentence))));
 				$ret[$c]['description'] = '@'.$username.' '.$sentence;
 				$c++;
 			}
