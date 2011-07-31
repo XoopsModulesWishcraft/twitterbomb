@@ -163,18 +163,14 @@ class TwitterbombKeywordsHandler extends XoopsPersistableObjectHandler
     }
     
     function getKeyword($base, $cid, $catid) {
-    	$criteriaa = new CriteriaCompo(new Criteria('cid', 0));
+    	$criteriaa = new CriteriaCompo(new Criteria('cid', 0), 'OR');
     	$criteriaa->add(new Criteria('catid', 0), 'OR');
     	$criteriaa->add(new Criteria('base', $base), 'AND');
     	$criteriab = new CriteriaCompo(new Criteria('cid', $cid));
     	$criteriab->add(new Criteria('catid', $catid), 'AND');
-    	$criteriab->add(new Criteria('base', $base), 'AND');
-    	$criteriac = new CriteriaCompo(new Criteria('cid', $cid), 'OR');
-    	$criteriac->add(new Criteria('catid', $catid), 'OR');
-    	$criteriac->add(new Criteria('base', $base), 'OR');    	
     	$criteria = new CriteriaCompo($criteriaa, 'OR');
     	$criteria->add($criteriab, 'OR');
-    	$criteria->add($criteriac, 'OR');
+    	$criteria->add(new Criteria('base', $base), 'AND');
     	$criteria->setOrder('DESC');
     	$criteria->setSort('RAND()');
     	$criteria->setLimit(1);
