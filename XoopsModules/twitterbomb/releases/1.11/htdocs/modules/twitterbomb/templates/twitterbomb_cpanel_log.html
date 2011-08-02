@@ -1,0 +1,24 @@
+<h1><{$smarty.const._AM_TWEETBOMB_LOG_H1}></h1>
+<p><{$smarty.const._AM_TWEETBOMB_LOG_P}></p>
+<div style="float:right;"><{$pagenav}></div>
+<table>
+	<tr class="head">
+		<th><{$provider_th}></th>
+		<th><{$date_th}></th>
+		<th><{$alias_th}></th>
+		<th><{$tweet_th}></th>
+		<th><{$url_th}></th>
+	</tr>
+	<{foreach item=item from=$log}>
+	<tr class="<{cycle values="even,odd"}>">
+		<td align='center'><{$item.provider}></td>
+		<td align='center'><{$item.date_datetime}></td>
+		<td align='center'><{$item.alias}></td>
+		<td align='center'><{$item.tweet}></td>
+		<td align='center'><{$item.url}></td>
+	</tr>
+	<{/foreach}>
+	<tr class="foot">
+		<td colspan="5">&nbsp;</td>
+	</tr>
+</table>
