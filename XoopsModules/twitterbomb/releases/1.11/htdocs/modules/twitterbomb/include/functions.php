@@ -84,7 +84,7 @@ if (!function_exists('twitterbomb_getCategoryTree')) {
 		foreach($categories as $catid => $category) {
 			$in_array[$catid] = $catid;
 			if ($categoriesb = $category_handler->getObjects(new Criteria('pcatdid', $catid), true)){
-				$in_array = $this->TreeMenu($in_array, $categoriesb, $ownid);
+				$in_array = twitterbomb_getCategoryTree($in_array, $categoriesb, $ownid);
 			}
 		}
 		return ($in_array);
