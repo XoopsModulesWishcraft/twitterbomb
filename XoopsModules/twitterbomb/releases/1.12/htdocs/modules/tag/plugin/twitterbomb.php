@@ -26,7 +26,7 @@ function twitterbomb_tag_iteminfo(&$items)
 			$items[$cat_id][$item_id] = array(
                 "title"     => $item_obj->getVar("tweet"),
                 "uid"       => $item_obj->getVar("uid"),
-                "link"      => $item_obj->getVar("url"),
+                "link"      => 'go.php?lid='.$item_id.'&sid='.$item_obj->getVar("sid").'&cid='.$item_obj->getVar("cid").'&catid='.$item_obj->getVar("catid").'&uri='.$item_obj->getVar("url"),
                 "time"      => $item_obj->getVar("date"),
                 "tags"      => tag_parse_tag($item_obj->getVar("tags", "n")),
                 "content"   => $myts->displayTarea($item_obj->getVar("tweet"),true,true,true,true,true,true)
