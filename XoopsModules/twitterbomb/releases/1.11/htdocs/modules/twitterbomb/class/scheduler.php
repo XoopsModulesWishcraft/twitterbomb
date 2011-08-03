@@ -92,18 +92,19 @@ class TwitterbombScheduler extends XoopsObject
 	}
 
     function getTweet() {
-    	if (is_object($this)) {
-    		if (is_object($this))
-    			$ret = $this->runGetPlugin(true);
-    		if (is_string($ret)&&!is_object($ret)) {
-    			return array('sid'=> $this->getVar('sid'), 'tweet' => ucfirst(trim((strlen($this->getVar('pre'))>0?$this->getVar('pre').' ':'').$ret)));
-    		} else {
-	    		if (is_object($ret))
-	    			return array('sid'=> $this->getVar('sid'), 'tweet' => ucfirst(trim((strlen($this->getVar('pre'))>0?$this->getVar('pre').' ':'').$ret->getVar('text'))));
-	    		else 
-	    			return '';
-    		}
+    	
+    	if (is_object($this))
+    		$ret = $this->runGetPlugin(true);
+    		
+    	if (is_string($ret)&&!is_object($ret)) {
+    		return array('sid'=> $this->getVar('sid'), 'tweet' => ucfirst(trim((strlen($this->getVar('pre'))>0?$this->getVar('pre').' ':'').$ret)));
+    	} else {
+	    	if (is_object($ret))
+	    		return array('sid'=> $this->getVar('sid'), 'tweet' => ucfirst(trim((strlen($this->getVar('pre'))>0?$this->getVar('pre').' ':'').$ret->getVar('text'))));
+	    	else 
+	    		return '';
     	}
+    	
     }
     
 	function runInsertPlugin() {
@@ -243,7 +244,7 @@ class TwitterbombSchedulerHandler extends XoopsPersistableObjectHandler
     	$obj = parent::getObjects($criteria, false);
     	if (is_object($obj[0])) {
     		$obj[0]->setVar('when', time(), true);
-    		$obj[0] = parent::get(parent::insert($obj[0], true));
+    		@parent::insert($obj[0], true);
     		if (is_object($obj[0]))
     			$tweet = $obj[0]->getTweet(true);
     		else 

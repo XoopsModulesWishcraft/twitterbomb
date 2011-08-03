@@ -14,7 +14,7 @@
  * @since           2.0.0
  * @version         $Id: backend.php 4941 2010-07-22 17:13:36Z beckmi $
  */
- 
+set_time_limit(180);
 include '../../mainfile.php';
 include('include/functions.php');	
 
@@ -22,6 +22,9 @@ $cid = isset($_REQUEST['cid'])?$_REQUEST['cid']:'0';
 $catid = isset($_REQUEST['catid'])?$_REQUEST['catid']:'0';
 $cacheid = isset($_REQUEST['cacheid'])?$_REQUEST['cacheid']:md5($cid.$catid);
 
+if ($cacheid != md5($cid.$catid))
+	$cacheid = md5($cid.$catid);
+	
 if ($GLOBALS['xoopsModuleConfig']['htaccess']) {
 	$url = XOOPS_URL.'/'.$GLOBALS['xoopsModuleConfig']['baseurl'].'/rss,'.$cid.','.$catid.','.$cacheid.$GLOBALS['xoopsModuleConfig']['endofurl_rss'];
 	if (strpos($url, $_SERVER['REQUEST_URI'])==0) {

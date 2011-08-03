@@ -98,7 +98,7 @@ if (!function_exists('twitterbomb_get_rss')) {
 		$urls_handler=&xoops_getmodulehandler('urls', 'twitterbomb');
 		$ret = array();
 		$c=0;
-		while(count($ret)<$items) {
+		while(count($ret)<$items||$looped<$items*2) {
 			$sentence = $base_matrix_handler->getSentence($cid, $catid);
 			$username = $usernames_handler->getUser($cid, $catid);
 			$url = $urls_handler->getUrl($cid, $catid);
@@ -116,6 +116,7 @@ if (!function_exists('twitterbomb_get_rss')) {
 	    		}
 	    		$c++;
 			}
+			$looped++;
 		}
 		return $ret;
 	}
@@ -127,11 +128,11 @@ if (!function_exists('twitterbomb_get_scheduler_rss')) {
 		$urls_handler=&xoops_getmodulehandler('urls', 'twitterbomb');
 		$ret = array();
 		$c=0;
-		while(count($ret)<$items) {
+		while(count($ret)<$items||$looped<$items*2) {
 			$sentence = $scheduler_handler->getTweet($cid, $catid, 0, 0);
-			if (strlen($sentence)!=0) {
+			if (is_array($sentence)) {
 				$url = $urls_handler->getUrl($cid, $catid);
-				$ret[$c]['title'] = str_replace('##', '#', twitterbomb_TweetString(htmlspecialchars_decode($sentence['tweet']), $GLOBALS['xoopsModuleConfig']['scheduler_aggregate'], $GLOBALS['xoopsModuleConfig']['scheduler_wordlength']));	  
+				$ret[$c]['title'] = str_replace('#(', '(#', str_replace('##', '#', twitterbomb_TweetString(htmlspecialchars_decode($sentence['tweet']), $GLOBALS['xoopsModuleConfig']['scheduler_aggregate'], $GLOBALS['xoopsModuleConfig']['scheduler_wordlength'])));	  
 				$ret[$c]['link'] = XOOPS_URL.'/modules/twitterbomb/go.php?sid='.$sentence['sid'].'&cid='.$cid.'&catid='.$catid.'&uri='.urlencode( sprintf($url, urlencode(str_replace(array('#', '@'), '',$sentence['tweet']))));
 				$ret[$c]['description'] = htmlspecialchars_decode($sentence['tweet']);
 				$ret[$c]['sid'] = $sentence['sid'];
@@ -146,6 +147,7 @@ if (!function_exists('twitterbomb_get_scheduler_rss')) {
 		    	}
 				$c++;
 			}
+			$looped++;
 		}
 		return $ret;
 	}
