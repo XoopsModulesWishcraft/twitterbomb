@@ -103,7 +103,7 @@ if (!function_exists('twitterbomb_get_rss')) {
 			$username = $usernames_handler->getUser($cid, $catid);
 			$url = $urls_handler->getUrl($cid, $catid);
 			if (strlen($username)>0) {
-				$ret[$c]['title'] = (strlen($username)>0&&mt_rand(0,1)==1?'@'.$username.' ':'').str_replace('##', '#', twitterbomb_TweetString(htmlspecialchars_decode($sentence), $GLOBALS['xoopsModuleConfig']['aggregate'], $GLOBALS['xoopsModuleConfig']['wordlength']));	  
+				$ret[$c]['title'] = (strlen($username)>0&&mt_rand(0,5)>2?'@'.$username.' ':'').str_replace('##', '#', twitterbomb_TweetString(htmlspecialchars_decode($sentence), $GLOBALS['xoopsModuleConfig']['aggregate'], $GLOBALS['xoopsModuleConfig']['wordlength']));	  
 				$ret[$c]['link'] = XOOPS_URL.'/modules/twitterbomb/go.php?cid='.$cid.'&catid='.$catid.'&uri='.urlencode( sprintf($url, urlencode(str_replace(array('#', '@'), '',$sentence))));
 				$ret[$c]['description'] = '@'.$username.' '.htmlspecialchars_decode($sentence);
 				if (strlen($ret[$c]['title'])!=0) {
