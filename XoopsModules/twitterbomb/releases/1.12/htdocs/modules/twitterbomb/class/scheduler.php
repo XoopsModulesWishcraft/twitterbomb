@@ -254,27 +254,29 @@ class TwitterbombSchedulerHandler extends XoopsPersistableObjectHandler
     	$criteria->setLimit(1);
     	$criteria->setStart(0);
     	$obj = parent::getObjects($criteria, false);
+    	
     	if (is_object($obj[0])) {
+    		
     		$obj[0]->setVar('when', time(), true);
     		@parent::insert($obj[0], true);
+    		
     		if (is_object($obj[0]))
     			$tweet = $obj[0]->getTweet(true);
     		else 
     			$tweet = null;
     	}
+    	
     	return $tweet;
     }
     
     function get($id, $fields = '*') {
-    	$this->recalc();
     	$obj = parent::get($id, $fields);
     	if (is_object($obj))
     		return @$obj->runGetPlugin(false);
     }
     
     function getObjects($criteria, $id_as_key=false, $as_object=true) {
-        $this->recalc();
-    	$objs = parent::getObjects($criteria, $id_as_key, $as_object);
+	   	$objs = parent::getObjects($criteria, $id_as_key, $as_object);
     	foreach($objs as $id => $obj) {
     		if (is_object($obj))
     			$objs[$id] = @$obj->runGetPlugin(false);

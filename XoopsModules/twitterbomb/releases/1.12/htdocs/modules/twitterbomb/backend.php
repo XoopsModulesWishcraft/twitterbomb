@@ -38,7 +38,6 @@ $GLOBALS['xoopsLogger']->activated = false;
 if (function_exists('mb_http_output')) {
     mb_http_output('pass');
 }
-header('Content-Type:text/xml; charset=utf-8');
 
 include_once $GLOBALS['xoops']->path('class/template.php');
 $tpl = new XoopsTpl();
@@ -136,6 +135,6 @@ $tpl = new XoopsTpl();
         }
     }
     
-
+header('Content-Type:text/xml; charset=utf-8');
 $tpl->display('db:twitterbomb_rss.html');
 ?>

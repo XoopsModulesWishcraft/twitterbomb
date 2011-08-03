@@ -124,12 +124,17 @@ class TwitterbombUsernamesHandler extends XoopsPersistableObjectHandler
     	$criteria->setSort('RAND()');
     	$criteria->setLimit(1);
     	$criteria->setStart(0);
+    	echo __LINE__.'<br/>';
     	$obj = parent::getObjects($criteria, false);
     	if (is_object($obj[0])) {
+    		echo __LINE__.'<br/>';
     		$obj[0]->setVar('tweeted', time());
+    		echo __LINE__.'<br/>';
     		parent::insert($obj[0], true);
+    		echo __LINE__.'<br/>';
     		return trim($obj[0]->getVar('twitter_username'));
     	}
+    	echo __LINE__.'<br/>';
     }
     
     function getFilterCriteria($filter) {

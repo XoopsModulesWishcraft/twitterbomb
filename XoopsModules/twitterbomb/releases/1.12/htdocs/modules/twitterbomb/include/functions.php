@@ -136,8 +136,11 @@ if (!function_exists('twitterbomb_get_scheduler_rss')) {
 		$urls_handler=&xoops_getmodulehandler('urls', 'twitterbomb');
 		$ret = array();
 		$c=0;
+		
 		while(count($ret)<$items&&$looped<$items*2) {
+			
 			$sentence = $scheduler_handler->getTweet($cid, $catid, 0, 0);
+			
 			if (is_array($sentence)&&count($ret)<$items) {
 				$url = $urls_handler->getUrl($cid, $catid);
 				$ret[$c]['title'] = str_replace('#@', '@', str_replace('#(', '(#', str_replace('##', '#', twitterbomb_TweetString(htmlspecialchars_decode($sentence['tweet']), $GLOBALS['xoopsModuleConfig']['scheduler_aggregate'], $GLOBALS['xoopsModuleConfig']['scheduler_wordlength']))));	  
@@ -145,7 +148,7 @@ if (!function_exists('twitterbomb_get_scheduler_rss')) {
 				$ret[$c]['description'] = htmlspecialchars_decode($sentence['tweet']);
 				$ret[$c]['sid'] = $sentence['sid'];
 				if (strlen($ret[$c]['title'])!=0) {
-	    			$log_handler=xoops_getmodulehandler('log', 'twitterbomb');
+					$log_handler=xoops_getmodulehandler('log', 'twitterbomb');
 	    			$log = $log_handler->create();
 	    			$log->setVar('provider', 'scheduler');
 	    			$log->setVar('cid', $cid);
@@ -156,8 +159,8 @@ if (!function_exists('twitterbomb_get_scheduler_rss')) {
 	    			$log->setVar('tags', twitterbomb_ExtractTags($ret[$c]['title']));
 	    			$ret[$c]['lid'] = $log_handler->insert($log, true);
 	    			$ret[$c]['link'] = XOOPS_URL.'/modules/twitterbomb/go.php?sid='.$sentence['sid'].'&lid='.$ret[$c]['lid'].'&cid='.$cid.'&catid='.$catid.'&uri='.urlencode( sprintf($url, urlencode(str_replace(array('#', '@'), '',$sentence['tweet']))));
-					if ($GLOBALS['xoopsModuleConfig']['tags']) {
-	    				$tag_handler = xoops_getmodulehandler('tag', 'tag');
+	    			if ($GLOBALS['xoopsModuleConfig']['tags']) {
+						$tag_handler = xoops_getmodulehandler('tag', 'tag');
 						$tag_handler->updateByItem($log->getVar('tags'), $ret[$c]['lid'], $GLOBALS['xoopsModule']->getVar("dirname"), $catid);
 	    			}
 		    	}

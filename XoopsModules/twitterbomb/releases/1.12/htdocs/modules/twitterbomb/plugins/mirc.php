@@ -29,9 +29,13 @@
 				}
 				break;	
 		}
+		
 		$parts = explode(' ', strtolower($tweet));
 		$common = explode(' ', strtolower($GLOBALS['xoopsModuleConfig']['scheduler_usernames']));
+		$usernames_handler = xoops_getmodulehandler('usernames', 'twitterbomb');
+		
 		if (count($common)==count($parts)&&sizeof($common)==sizeof($parts)) {
+			
 			$pass = true;
 			foreach($common as $key=> $value) {
 				switch($value){
@@ -48,7 +52,7 @@
 						break;
 				}
 			}
-			$usernames_handler = xoops_getmodulehandler('usernames', 'twitterbomb');
+			
 			if ($pass==true&&!empty($twitter_username)) {
 				$criteria= new CriteriaCompo(new Criteria('twitter_username', $twitter_username, 'LIKE'));
 				$criteria->add(new Criteria('source_nick', strtolower($nick), 'LIKE'));
@@ -65,9 +69,12 @@
 				}
 				return '#'. $nick .' '.str_replace($twitter_username, '@'.$twitter_username, $tweet);
 			}
+			
 		}
+		
 		$tweetuser = $usernames_handler->getUser($object->getVar('cid'), $object->getVar('catid'), strtolower($nick));
-		return '#'. $nick .(!empty($tweetuser)?' @'.$tweetuser.' ':' ').$tweet;		
+		return '#'. $nick .(!empty($tweetuser)?' @'.$tweetuser.' ':' ').$tweet;
+				
 	}
 	
 ?>
