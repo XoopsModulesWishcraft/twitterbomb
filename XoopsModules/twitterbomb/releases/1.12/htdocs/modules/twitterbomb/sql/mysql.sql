@@ -54,7 +54,7 @@ CREATE TABLE `twitterbomb_scheduler` (
 
 CREATE TABLE `twitterbomb_log` (
   `lid` INT(13) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `provider` ENUM('bomb', 'sceduler') DEFAULT 'bomb',
+  `provider` ENUM('bomb', 'scheduler') DEFAULT 'bomb',
   `uid` INT(13) UNSIGNED DEFAULT '0', 
   `sid` INT(13) UNSIGNED DEFAULT '0',
   `alias` VARCHAR(64) DEFAULT NULL,

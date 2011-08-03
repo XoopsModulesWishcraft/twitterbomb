@@ -15,7 +15,7 @@ class TwitterBombLog extends XoopsObject
     function TwitterBombLog($id = null)
     {
         $this->initVar('lid', XOBJ_DTYPE_INT, null, false);
-		$this->initVar('provider', XOBJ_DTYPE_ENUM, 'bomb', false, false, false, array('bomb', 'sceduler'));
+		$this->initVar('provider', XOBJ_DTYPE_ENUM, 'bomb', false, false, false, array('bomb', 'scheduler'));
         $this->initVar('uid', XOBJ_DTYPE_INT, null, false);
         $this->initVar('sid', XOBJ_DTYPE_INT, null, false);
 		$this->initVar('alias', XOBJ_DTYPE_TXTBOX, false, false, 64);

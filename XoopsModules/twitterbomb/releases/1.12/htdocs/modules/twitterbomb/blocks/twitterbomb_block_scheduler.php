@@ -44,7 +44,8 @@ function b_twitterbomb_block_scheduler_show( $options )
 		if (!empty($tweet['sid'])) {
 			$scheduler_handler =& xoops_getmodulehandler('scheduler', 'twitterbomb');
 			$scheduler = $scheduler_handler->get($tweet['sid']);
-			$block['tweets'][$key]['hits'] = $scheduler->getVar('hits');
+			if (is_object($scheduler))
+				$block['tweets'][$key]['hits'] = $scheduler->getVar('hits');
 		} 
 	}
 	return $block ;

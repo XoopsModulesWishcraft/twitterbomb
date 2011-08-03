@@ -18,6 +18,8 @@ function xoops_module_update_twitterbomb(&$module) {
 	$sql[] = "ALTER TABLE `".$GLOBALS['xoopsDB']->prefix('twitterbomb_log')."` ADD COLUMN `hits` INT(13) UNSIGNED DEFAULT '0'";
 	$sql[] = "ALTER TABLE `".$GLOBALS['xoopsDB']->prefix('twitterbomb_log')."` ADD COLUMN `rank` INT(13) UNSIGNED DEFAULT '0'";
 	$sql[] = "ALTER TABLE `".$GLOBALS['xoopsDB']->prefix('twitterbomb_log')."` ADD COLUMN `active` INT(13) UNSIGNED DEFAULT '0'";
+	$sql[] = "ALTER TABLE `".$GLOBALS['xoopsDB']->prefix('twitterbomb_log')."` CHANGE COLUMN `provider` `provider` ENUM('bomb', 'scheduler') DEFAULT 'bomb'";
+	
 	
 $sql[] = "CREATE TABLE `".$GLOBALS['xoopsDB']->prefix('twitterbomb_scheduler')."` (
   `sid` INT(13) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -44,7 +46,7 @@ $sql[] = "CREATE TABLE `".$GLOBALS['xoopsDB']->prefix('twitterbomb_scheduler')."
 	
 	$sql[] = "CREATE TABLE `".$GLOBALS['xoopsDB']->prefix('twitterbomb_log')."` (	
   `lid` INT(13) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `provider` ENUM('bomb', 'sceduler') DEFAULT 'bomb',
+  `provider` ENUM('bomb', 'scheduler') DEFAULT 'bomb',
   `uid` INT(13) UNSIGNED DEFAULT '0', 
   `sid` INT(13) UNSIGNED DEFAULT '0',
   `alias` VARCHAR(64) DEFAULT NULL,
