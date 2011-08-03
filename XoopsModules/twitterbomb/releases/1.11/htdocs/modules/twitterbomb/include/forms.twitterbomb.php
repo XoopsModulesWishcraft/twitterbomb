@@ -384,7 +384,7 @@
 		$ele['op'] = new XoopsFormHidden('op', 'campaign');
 		$ele['fct'] = new XoopsFormHidden('fct', 'save');
 		$ele['id'] = new XoopsFormHidden('id', $id);
-		$ele['cid'] = new XoopsFormSelectCampaign(_AM_TWEETBOMB_FORM_CID_SCHEDULER, $id.'[cid]', $object->getVar('cid'), 1, false, false, 'scheduler');
+		$ele['cid'] = new XoopsFormSelectCampaigns(_AM_TWEETBOMB_FORM_CID_SCHEDULER, $id.'[cid]', $object->getVar('cid'), 1, false, false, 'scheduler');
 		$ele['cid']->setDescription(_AM_TWEETBOMB_FORM_DESC_CID_SCHEDULER);
 		$ele['catid'] = new XoopsFormSelectCategories(_AM_TWEETBOMB_FORM_CATID_SCHEDULER, $id.'[catid]', $object->getVar('catid'));
 		$ele['catid']->setDescription(_AM_TWEETBOMB_FORM_DESC_CATID_SCHEDULER);
@@ -445,7 +445,7 @@
 		$ele['op'] = new XoopsFormHidden('op', 'scheduler');
 		$ele['fct'] = new XoopsFormHidden('fct', 'importfile');
 		$ele['id'] = new XoopsFormHidden('id', 0);
-		$ele['cid'] = new XoopsFormSelectCampaign(_AM_TWEETBOMB_FORM_CID_SCHEDULER, $id.'[cid]', $object->getVar('cid'), 1, false, false, 'scheduler');
+		$ele['cid'] = new XoopsFormSelectCampaigns(_AM_TWEETBOMB_FORM_CID_SCHEDULER, $id.'[cid]', $object->getVar('cid'), 1, false, false, 'scheduler');
 		$ele['cid']->setDescription(_AM_TWEETBOMB_FORM_DESC_CID_SCHEDULER);
 		$ele['catid'] = new XoopsFormSelectCategories(_AM_TWEETBOMB_FORM_CATID_SCHEDULER, $id.'[catid]', $object->getVar('catid'));
 		$ele['catid']->setDescription(_AM_TWEETBOMB_FORM_DESC_CATID_SCHEDULER);
