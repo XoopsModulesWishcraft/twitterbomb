@@ -38,7 +38,7 @@ class TwitterbombBase_matrix extends XoopsObject
 		$ret = parent::toArray();
 		$ele = array();
 		$ele['id'] = new XoopsFormHidden('id['.$ret['baseid'].']', $this->getVar('baseid'));
-		$ele['cid'] = new XoopsFormSelectCampaigns('', $ret['baseid'].'[cid]', $this->getVar('cid'));
+		$ele['cid'] = new XoopsFormSelectCampaigns('', $ret['baseid'].'[cid]', $this->getVar('cid'), 1, false, false, 'bomb');
 		$ele['catid'] = new XoopsFormSelectCategories('', $ret['baseid'].'[catid]', $this->getVar('catid'));
 		$ele['base1'] = new XoopsFormSelectBase('', $ret['baseid'].'[base1]', $this->getVar('base1'));
 		$ele['base2'] = new XoopsFormSelectBase('', $ret['baseid'].'[base2]', $this->getVar('base2'));

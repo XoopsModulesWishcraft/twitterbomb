@@ -126,7 +126,7 @@ class XoopsFormSelectCategories extends XoopsFormElement
 			if ($catid!=$ownid) {
 				$langs_array[$catid] = str_repeat('--', $level).$category->getVar('name');
 				if ($categoriesb = $category_handler->getObjects(new Criteria('pcatdid', $catid), true)){
-					$langs_array = $this->TreeMenu($langs_array, $categoriesb, $level);
+					$langs_array = $this->TreeMenu($langs_array, $categoriesb, $level, $ownid);
 				}
 			}
 		}

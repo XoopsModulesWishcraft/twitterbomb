@@ -33,7 +33,7 @@ class TwitterbombKeywords extends XoopsObject
 		$ret = parent::toArray();
 		$ele = array();
 		$ele['id'] = new XoopsFormHidden('id['.$ret['kid'].']', $this->getVar('kid'));
-		$ele['cid'] = new XoopsFormSelectCampaigns('', $ret['kid'].'[cid]', $this->getVar('cid'));
+		$ele['cid'] = new XoopsFormSelectCampaigns('', $ret['kid'].'[cid]', $this->getVar('cid'), 1, false, false, 'bomb');
 		$ele['catid'] = new XoopsFormSelectCategories('', $ret['kid'].'[catid]', $this->getVar('catid'));
 		$ele['base'] = new XoopsFormSelectBase('', $ret['kid'].'[base]', $this->getVar('base'), 1, false, false);
 		$ele['keyword'] = new XoopsFormText('', $ret['kid'].'[keyword]', 26, 35, $this->getVar('keyword'));

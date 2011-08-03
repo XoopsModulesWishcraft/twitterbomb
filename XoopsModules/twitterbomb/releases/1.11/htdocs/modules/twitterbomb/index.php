@@ -32,9 +32,9 @@
 				$category_handler =& xoops_getmodulehandler('category', 'twitterbomb');
 		
 				if ($catid>0)
-					$criteriaa = new CriteriaCompo(new Criteria('catid', $catid), 'AND');
+					$criteriaa = new CriteriaCompo(new Criteria('catid', '('.implode(',',twitterbomb_getSubCategoriesIn($catid)).')', 'IN'), 'AND');
 				else 
-					$criteriaa = new CriteriaCompo(new Criteria('1', '1'), 'AND');
+					$criteriaa = new CriteriaCompo(new Criteria('catid', '('.implode(',',twitterbomb_getSubCategoriesIn(0)).')', 'IN'), 'AND');
 		    	
 				$criteriaa->add(new Criteria('timed', '0'), 'AND');
 		    	

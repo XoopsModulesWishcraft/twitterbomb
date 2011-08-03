@@ -42,7 +42,7 @@ class TwitterbombScheduler extends XoopsObject
 		$ret = parent::toArray();
 		$ele = array();
 		$ele['id'] = new XoopsFormHidden('id['.$ret['sid'].']', $this->getVar('sid'));
-		$ele['cid'] = new XoopsFormSelectCampaigns('', $ret['sid'].'[cid]', $this->getVar('cid'));
+		$ele['cid'] = new XoopsFormSelectCampaigns('', $ret['sid'].'[cid]', $this->getVar('cid'), 1, false, false, 'scheduler');
 		$ele['catid'] = new XoopsFormSelectCategories('', $ret['sid'].'[catid]', $this->getVar('catid'));
 		$ele['mode'] = new XoopsFormSelectMode('', $ret['sid'].'[mode]', $this->getVar('mode'), 1, false, false);
 		$ele['text'] = new XoopsFormText('', $ret['sid'].'[text]', 38, 500, $this->getVar('text'));

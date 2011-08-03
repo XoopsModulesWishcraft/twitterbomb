@@ -68,6 +68,29 @@ if (!function_exists("twitterbomb_adminMenu")) {
   }
 }
 
+if (!function_exists('twitterbomb_getSubCategoriesIn')) {
+	function twitterbomb_getSubCategoriesIn($catid=0){
+		$category_handler =& xoops_getmodulehandler('category', 'twitterbomb');
+		$categories = $category_handler->getObjects(new Criteria('pcatdid', $catid), true);
+		$in_array = twitterbomb_getCategoryTree(array(), $categories, -1, $catid);
+		$in_array[$catid]=$catid;
+		return $in_array;
+	}
+}
+
+if (!function_exists('twitterbomb_getCategoryTree')) {
+	function twitterbomb_getCategoryTree($in_array, $categories, $ownid) {
+		$category_handler =& xoops_getmodulehandler('category', 'twitterbomb');
+		foreach($categories as $catid => $category) {
+			$in_array[$catid] = $catid;
+			if ($categoriesb = $category_handler->getObjects(new Criteria('pcatdid', $catid), true)){
+				$in_array = $this->TreeMenu($in_array, $categoriesb, $ownid);
+			}
+		}
+		return ($in_array);
+	}
+}
+
 if (!function_exists('twitterbomb_get_rss')) {
 	function twitterbomb_get_rss($items, $cid, $catid) {
 		$base_matrix_handler=&xoops_getmodulehandler('base_matrix', 'twitterbomb');
