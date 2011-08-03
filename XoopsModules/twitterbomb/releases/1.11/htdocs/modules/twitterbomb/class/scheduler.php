@@ -249,6 +249,7 @@ class TwitterbombSchedulerHandler extends XoopsPersistableObjectHandler
     		else 
     			$tweet = '';
     	}
+    	return $tweet;
     }
     
     function get($id, $fields = '*') {

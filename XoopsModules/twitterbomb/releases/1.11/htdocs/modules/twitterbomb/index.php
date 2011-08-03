@@ -39,9 +39,9 @@
 				$criteriaa->add(new Criteria('timed', '0'), 'AND');
 		    	
 				if ($catid>0)
-					$criteriab = new CriteriaCompo(new Criteria('catid', $catid), 'AND');
+					$criteriab = new CriteriaCompo(new Criteria('catid', '('.implode(',',twitterbomb_getSubCategoriesIn($catid)).')', 'IN'), 'AND');
 				else 
-					$criteriab = new CriteriaCompo(new Criteria('1', '1'), 'AND');
+					$criteriab = new CriteriaCompo(new Criteria('catid', '('.implode(',',twitterbomb_getSubCategoriesIn($catid)).')', 'IN'), 'AND');
 		    	$criteriab->add(new Criteria('timed', '1'), 'AND');
 				$criteriab->add(new Criteria('`start`', time(), '<='), 'AND');
 				$criteriab->add(new Criteria('`end`', time(), '>='), 'AND');

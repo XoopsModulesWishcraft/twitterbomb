@@ -129,21 +129,23 @@ if (!function_exists('twitterbomb_get_scheduler_rss')) {
 		$c=0;
 		while(count($ret)<$items) {
 			$sentence = $scheduler_handler->getTweet($cid, $catid, 0, 0);
-			$url = $urls_handler->getUrl($cid, $catid);
-			$ret[$c]['title'] = str_replace('##', '#', twitterbomb_TweetString(htmlspecialchars_decode($sentence['tweet']), $GLOBALS['xoopsModuleConfig']['scheduler_aggregate'], $GLOBALS['xoopsModuleConfig']['scheduler_wordlength']));	  
-			$ret[$c]['link'] = XOOPS_URL.'/modules/twitterbomb/go.php?sid='.$sentence['sid'].'&cid='.$cid.'&catid='.$catid.'&uri='.urlencode( sprintf($url, urlencode(str_replace(array('#', '@'), '',$sentence['tweet']))));
-			$ret[$c]['description'] = htmlspecialchars_decode($sentence['tweet']);
-			$ret[$c]['sid'] = $sentence['sid'];
-			if (strlen($ret[$c]['title'])!=0) {
-    			$log_handler=xoops_getmodulehandler('log', 'twitterbomb');
-    			$log = $log_handler->create();
-    			$log->setVar('provider', 'scheduler');
-    			$log->setVar('sid', $ret[$c]['sid']);
-    			$log->setVar('url', $ret[$c]['link']);
-    			$log->setVar('tweet', substr($ret[$c]['title'],0,139));
-    			$log_handler->insert($log, true);
-	    	}
-			$c++;
+			if (strlen($sentence)!=0) {
+				$url = $urls_handler->getUrl($cid, $catid);
+				$ret[$c]['title'] = str_replace('##', '#', twitterbomb_TweetString(htmlspecialchars_decode($sentence['tweet']), $GLOBALS['xoopsModuleConfig']['scheduler_aggregate'], $GLOBALS['xoopsModuleConfig']['scheduler_wordlength']));	  
+				$ret[$c]['link'] = XOOPS_URL.'/modules/twitterbomb/go.php?sid='.$sentence['sid'].'&cid='.$cid.'&catid='.$catid.'&uri='.urlencode( sprintf($url, urlencode(str_replace(array('#', '@'), '',$sentence['tweet']))));
+				$ret[$c]['description'] = htmlspecialchars_decode($sentence['tweet']);
+				$ret[$c]['sid'] = $sentence['sid'];
+				if (strlen($ret[$c]['title'])!=0) {
+	    			$log_handler=xoops_getmodulehandler('log', 'twitterbomb');
+	    			$log = $log_handler->create();
+	    			$log->setVar('provider', 'scheduler');
+	    			$log->setVar('sid', $ret[$c]['sid']);
+	    			$log->setVar('url', $ret[$c]['link']);
+	    			$log->setVar('tweet', substr($ret[$c]['title'],0,139));
+	    			$log_handler->insert($log, true);
+		    	}
+				$c++;
+			}
 		}
 		return $ret;
 	}
