@@ -1,0 +1,566 @@
+<?php
+
+if (!defined('XOOPS_ROOT_PATH')) {
+	exit();
+}
+
+require_once($GLOBALS['xoops']->path('/modules/twitterbomb/include/twitteroauth.php'));
+require_once($GLOBALS['xoops']->path('/modules/twitterbomb/include/functions.php'));
+
+class TwitterbombOauth extends XoopsObject
+{
+
+	var $_connection = null;
+	var $_handler = null;
+	
+    function TwitterbombOauth($fid = null)
+    {
+        $this->initVar('oid', XOBJ_DTYPE_INT, null, false);
+        $this->initVar('cids', XOBJ_DTYPE_ARRAY, array(), false);
+        $this->initVar('catids', XOBJ_DTYPE_ARRAY, array(), false);        
+		$this->initVar('mode', XOBJ_DTYPE_ENUM, 'valid', false, false, false, array('valid','invalid','expired','disabled','other'));
+        $this->initVar('consumer_key', XOBJ_DTYPE_TXTBOX, CONSUMER_KEY, true, 255);
+        $this->initVar('consumer_secret', XOBJ_DTYPE_TXTBOX, CONSUMER_SECRET, true, 255);   
+        $this->initVar('oauth_token', XOBJ_DTYPE_TXTBOX, null, true, 255);
+        $this->initVar('oauth_token_secret', XOBJ_DTYPE_TXTBOX, null, true, 255);
+        $this->initVar('username', XOBJ_DTYPE_TXTBOX, null, true, 64);
+        $this->initVar('ip', XOBJ_DTYPE_TXTBOX, null, true, 64);
+        $this->initVar('netbios', XOBJ_DTYPE_TXTBOX, null, true, 255);        
+        $this->initVar('uid', XOBJ_DTYPE_INT, null, false);
+		$this->initVar('created', XOBJ_DTYPE_INT, null, false);
+		$this->initVar('updated', XOBJ_DTYPE_INT, null, false);
+		$this->initVar('actioned', XOBJ_DTYPE_INT, null, false);		
+		$this->initVar('tweeted', XOBJ_DTYPE_INT, null, false);
+		$this->initVar('mentions', XOBJ_DTYPE_INT, null, false);
+		$this->initVar('friends', XOBJ_DTYPE_INT, null, false);
+		$this->initVar('tweets', XOBJ_DTYPE_INT, null, false);
+		$this->initVar('calls', XOBJ_DTYPE_INT, null, false);
+		$this->initVar('remaining_hits', XOBJ_DTYPE_INT, null, false);
+		$this->initVar('hourly_limit', XOBJ_DTYPE_INT, null, false);
+		$this->initVar('api_resets', XOBJ_DTYPE_INT, null, false);
+		$this->initVar('reset', XOBJ_DTYPE_INT, null, false);
+	}
+
+	function setHandler($handler)
+	{
+		$this->_handler = $handler;
+	}
+	
+	function getConnection()
+	{
+		if (!is_a($this->_connection, 'TwitterOAuth'))
+			$this->_connection = new TwitterOAuth($this->getVar('consumer_key'), $this->getVar('consumer_secret'), $this->getVar('oauth_token'), $this->getVar('oauth_token_secret'));
+		@$this->getRateLimits();
+		return $this->_connection;
+	}
+	
+	function createFollow($mixed, $type='user_id') {
+		if (!is_a($this->_connection, 'TwitterOAuth'))
+			@$this->getConnection();
+
+		if (is_a($this->_connection, 'TwitterOAuth')&&$this->getVar('calls')<$this->getVar('hourly_limit')) {
+			$follow = twitterbomb_object2array($this->_connection->post('friendships/create', array( $type=>$mixed, 'follow' => 'true')));
+			switch ($this->_connection->http_code) {
+		  		case 200:
+		    		$this->setVar('calls', $this->getVar('calls')+1);
+		    		if (is_a($this->_handler, 'TwitterbombOauthHandler'))
+		    			@$this->_handler->insert($this, true);
+		  			return $follow; 
+		    		break;
+		  		default:
+		    		return false;
+		    		break;
+			}
+		} else 
+			return false;
+			
+	}
+	
+	function sendTweet($tweet, $url) {
+		if (!is_a($this->_connection, 'TwitterOAuth'))
+			@$this->getConnection();
+
+		if (is_a($this->_connection, 'TwitterOAuth')&&$this->getVar('calls')<$this->getVar('hourly_limit')) {
+			$tweet = twitterbomb_object2array($this->_connection->post('statuses/update', 	array(	'status'=>substr($tweet,0, (!empty($url)?126:140)).' '.$url,
+																									'wrap_links' => 'true' 
+																							)));
+			switch ($this->_connection->http_code) {
+		  		case 200:
+		    		$this->setVar('tweeted', time());
+		    		$this->setVar('tweets', $this->getVar('tweets')+1);
+		    		$this->setVar('calls', $this->getVar('calls')+1);
+		    		if (is_a($this->_handler, 'TwitterbombOauthHandler'))
+		    			@$this->_handler->insert($this, true);
+		  			return $tweet['id_str']; 
+		    		break;
+		  		default:
+		    		return false;
+		    		break;
+			}
+		} else 
+			return false;
+			
+	}
+	
+	function getRateLimits() {
+		if (!is_a($this->_connection, 'TwitterOAuth'))
+			@$this->getConnection();
+
+		if (is_a($this->_connection, 'TwitterOAuth')) {
+			$limits = twitterbomb_object2array($this->_connection->get('account/rate_limit_status', 	array()));
+			switch ($this->_connection->http_code) {
+		  		case 200:
+		  			if ($this->getVar('api_resets') <> $limits['reset_time_in_seconds']) {
+		  				$this->setVar('reset', time());
+		  				$this->setVar('calls', 0);
+		  			}
+		    		$this->setVar('remaining_hits', $limits['remaining_hits']);
+		    		$this->setVar('hourly_limit', $limits['hourly_limit']);
+		    		$this->setVar('api_resets', $limits['reset_time_in_seconds']);
+		    		if (is_a($this->_handler, 'TwitterbombOauthHandler'))
+		    			@$this->_handler->insert($this, true);
+		  			return $limits; 
+		    		break;
+		  		default:
+		    		return false;
+		    		break;
+			}
+		} else 
+			return false;
+	}
+
+	function getUserLookup($mixed = '', $type='user_id') {
+		if (!is_a($this->_connection, 'TwitterOAuth'))
+			@$this->getConnection();
+
+		if (is_array($mixed)) {
+			$c=1;
+			foreach($mixed as $key => $value) {
+				$i++;
+				$ret[$c] .= $value.(sizeof($mixed)!=$key||$i<100?',':'');		
+				if ($i=100) {
+					$i=0;
+					$c++;
+				}
+			}
+		} else {
+			$c=1;
+			$mixed = explode(',',$mixed);
+			foreach($mixed as $key => $value) {
+				$i++;
+				$ret[$c] .= $value.(sizeof($mixed)!=$key||$i<100?',':'');		
+				if ($i=100) {
+					$i=0;
+					$c++;
+				}
+			}
+		}		
+		
+		foreach($ret as $key => $mixed) {
+			if (is_a($this->_connection, 'TwitterOAuth')&&$this->getVar('calls')<$this->getVar('hourly_limit')) {
+				$users[$key] = twitterbomb_object2array($this->_connection->get('users/lookup', 	array(	$type=>$mixed	)));
+				switch ($this->_connection->http_code) {
+			  		case 200:
+			    		$this->setVar('calls', $this->getVar('calls')+1);
+		    			if (is_a($this->_handler, 'TwitterbombOauthHandler'))
+		    				@$this->_handler->insert($this, true);
+		    			foreach($users[$key] as $user) {
+		    				$output[($type=='screen_name'?$user['screen_name']:$user['id'])] = $user; 
+		    			}
+			     		break;
+				}
+			} else 
+				return $output;
+		}
+		return $output;
+	}
+
+	function getFriends($mixed, $type='user_id') {
+		if (!is_a($this->_connection, 'TwitterOAuth'))
+			@$this->getConnection();
+
+		$ids = array();
+		if (is_a($this->_connection, 'TwitterOAuth')) {
+			$cursor = -1;
+			while($cursor!=0&&$this->getVar('calls')<$this->getVar('hourly_limit')) {
+				$friends = twitterbomb_object2array($this->_connection->get('friends/ids', 	array($type=>$mixed, 'cursor'=>$cursor)));
+				switch ($this->_connection->http_code) {
+			  		case 200:
+			  			$this->setVar('calls', $this->getVar('calls')+1);
+		    			if (is_a($this->_handler, 'TwitterbombOauthHandler'))
+		    				@$this->_handler->insert($this, true);
+		    			$cursor = $friends['next_cursor']; 
+			  			$ids = array_merge($ids, $friends['ids']); 
+			    		break;
+			  		default:
+			    		$cursor=0;
+			    		break;
+				}
+			}
+		} else 
+			return $ids;
+		return $ids;
+	}
+
+	function getMentions() {
+		if (!is_a($this->_connection, 'TwitterOAuth'))
+			@$this->getConnection();
+
+		$mentions = array();
+		if (is_a($this->_connection, 'TwitterOAuth')) {
+			$page = 1;
+			while($page!=0&&$this->getVar('calls')<$this->getVar('hourly_limit')) {
+				$mention = twitterbomb_object2array($this->_connection->get('statuses/mentions', 	array('count'=>200, 'include_entities '=>'true', 'contributor_details'=>'true')));
+				if (empty($mention))	
+					$page = 0;
+				switch ($this->_connection->http_code) {
+			  		case 200:
+			  			$this->setVar('calls', $this->getVar('calls')+1);
+		    			if (is_a($this->_handler, 'TwitterbombOauthHandler'))
+		    				@$this->_handler->insert($this, true);
+		    			if ($page!=0)
+							$page++; 
+			  			$mentions = array_merge($mentions, $mention); 
+			    		break;
+			  		default:
+			    		$page=0;
+			    		break;
+				}
+			}
+		} else 
+			return $mentions;
+		return $mentions;
+	}
+	
+	
+	function getTrend($type='')
+	{
+		if (!is_a($this->_connection, 'TwitterOAuth'))
+			$this->getConnection();
+			
+		if (is_a($this->_connection, 'TwitterOAuth')&&$this->getVar('calls')<$this->getVar('hourly_limit')) {
+			$trends = twitterbomb_object2array($this->_connection->get('trends'.(!empty($type)?'/'.$type:''), array()));
+			switch ($this->_connection->http_code) {
+		  		case 200:
+		  			$this->setVar('calls', $this->getVar('calls')+1);
+	    			if (is_a($this->_handler, 'TwitterbombOauthHandler'))
+	    				@$this->_handler->insert($this, true);
+		    		return $trends; 
+		    		break;
+		  		default:
+		    		return array();
+		    		break;
+			}
+		} else 
+			return array();
+	}
+	
+	function getForm() {
+		return tweetbomb_oauth_get_form($this);
+	}
+
+	function toArray() {
+		$ret = parent::toArray();
+		$ele = array();
+		$ele['id'] = new XoopsFormHidden('id['.$ret['oid'].']', $this->getVar('oid'));
+		$ele['cids'] = new TwitterBombFormSelectCampaigns('', $ret['oid'].'[cids]', $this->getVar('cids'), 6 , true);
+		$ele['catids'] = new TwitterBombFormSelectCategories('', $ret['oid'].'[catids]', $this->getVar('catids'), 6, true);
+		$ele['type'] = new TwitterBombFormSelectOAuthMode('', $ret['oid'].'[mode]', $this->getVar('mode'));
+		if ($ret['uid']>0) {
+			$member_handler=xoops_gethandler('member');
+			$user = $member_handler->getUser($ret['uid']);
+			$ele['uid'] = new XoopsFormLabel('', '<a href="'.XOOPS_URL.'/userinfo.php?uid='.$ret['uid'].'">'.$user->getVar('uname').'</a>');
+		} else {
+			$ele['uid'] = new XoopsFormLabel('', _MI_TWEETBOMB_ANONYMOUS);
+		}
+		if ($ret['created']>0) {
+			$ele['created'] = new XoopsFormLabel('', date(_DATESTRING, $ret['created']));
+		} else {
+			$ele['created'] = new XoopsFormLabel('', '');
+		}
+		if ($ret['actioned']>0) {
+			$ele['actioned'] = new XoopsFormLabel('', date(_DATESTRING, $ret['actioned']));
+		} else {
+			$ele['actioned'] = new XoopsFormLabel('', '');
+		}
+		if ($ret['updated']>0) {
+			$ele['updated'] = new XoopsFormLabel('', date(_DATESTRING, $ret['updated']));
+		} else {
+			$ele['updated'] = new XoopsFormLabel('', '');
+		}
+		if ($ret['tweeted']>0) {
+			$ele['tweeted'] = new XoopsFormLabel('', date(_DATESTRING, $ret['tweeted']));
+		} else {
+			$ele['tweeted'] = new XoopsFormLabel('', '');
+		}
+		foreach($ele as $key => $obj) {
+			$ret['form'][$key] = $ele[$key]->render(); 
+		}
+		return $ret;
+	}
+	
+	function runInsertPlugin() {
+		
+		include_once($GLOBALS['xoops']->path('/modules/twitterbomb/plugins/'.$this->getVar('mode').'.php'));
+		
+		switch ($this->getVar('mode')) {
+			case 'valid':
+			case 'invalid':
+			case 'expired':
+			case 'disabled':
+			case 'other':
+				$func = ucfirst($this->getVar('mode')).'InsertHook';
+				break;
+			default:
+				return false;
+				break;
+		}
+		
+		if (function_exists($func))  {
+			return @$func($this);
+		}
+		return $this->getVar('oid');
+	}
+	
+	function runGetPlugin($for_tweet=false) {
+		
+		include_once($GLOBALS['xoops']->path('/modules/twitterbomb/plugins/'.$this->getVar('mode').'.php'));
+		
+		switch ($this->getVar('mode')) {
+			case 'valid':
+			case 'invalid':
+			case 'expired':
+			case 'disabled':
+			case 'other':
+				$func = ucfirst($this->getVar('mode')).'GetHook';
+				break;
+			default:
+				return false;
+				break;
+		}
+		
+		if (function_exists($func))  {
+			return @$func($this, $for_tweet);
+		}
+		return $this;
+	}
+}
+
+
+/**
+* XOOPS Spider handler class.
+* This class is responsible for providing data access mechanisms to the data source
+* of XOOPS user class objects.
+*
+* @author  Simon Roberts <simon@xoops.org>
+* @package kernel
+*/
+class TwitterbombOauthHandler extends XoopsPersistableObjectHandler
+{
+	var $_connection = NULL;
+	var $_user = array();
+	
+    function __construct(&$db) 
+    {
+        parent::__construct($db, "twitterbomb_oauth", 'TwitterbombOauth', "oid", "username");
+
+        xoops_load('xoopscache');
+		if (!class_exists('XoopsCache')) {
+			// XOOPS 2.4 Compliance
+			xoops_load('cache');
+			if (!class_exists('XoopsCache')) {
+				include_once XOOPS_ROOT_PATH.'/class/cache/xoopscache.php';
+			}
+		}
+		
+		$this->_user = twitterbomb_getuser_id();
+    }
+	
+    function insert($obj, $force=true) {
+    	
+    	if ($obj->isNew()) {
+    		$obj->setVar('created', time());
+    		if (is_object($GLOBALS['xoopsUser']))
+    			$obj->setVar('uid', $GLOBALS['xoopsUser']->getVar('uid'));
+    	} else {
+    		$obj->setVar('updated', time());
+    	}
+    	
+    	$run_plugin = false;
+    	if ($obj->vars['mode']['changed']==true) {	
+			$obj->setVar('actioned', time());
+			$run_plugin = true;
+		}
+     	
+    	if ($run_plugin == true) {
+    		$id = parent::insert($obj, $force);
+    		$obj = parent::get($id);
+    		if (is_object($obj)) {
+	    		$ret = $obj->runInsertPlugin();
+	    		return ($ret!=0)?$ret:$id;
+    		} else {
+    			return $id;
+    		}
+    	} else {
+    		return parent::insert($obj, $force);
+    	}
+    }
+   
+    function get($id, $fields = '*') {
+    	$obj = parent::get($id, $fields);
+    	if (is_object($obj)) {
+    		$obj->setHandler($this);
+    		return @$obj->runGetPlugin(false);
+    	}
+    }
+    
+    function getObjects($criteria, $id_as_key=false, $as_object=true) {
+	   	$objs = parent::getObjects($criteria, $id_as_key, $as_object);
+    	foreach($objs as $id => $obj) {
+    		if (is_object($obj)) {
+    			$objs[$id]->setHandler($this);
+    			$objs[$id] = @$obj->runGetPlugin(false);
+    		}
+    	}
+    	return $objs;
+    }
+    
+    function getFilterCriteria($filter) {
+    	$parts = explode('|', $filter);
+    	$criteria = new CriteriaCompo();
+    	foreach($parts as $part) {
+    		$var = explode(',', $part);
+    		if (!empty($var[1])&&!is_numeric($var[0])) {
+    			$object = $this->create();
+    			if (		$object->vars[$var[0]]['data_type']==XOBJ_DTYPE_TXTBOX || 
+    						$object->vars[$var[0]]['data_type']==XOBJ_DTYPE_TXTAREA) 	{
+    				$criteria->add(new Criteria('`'.$var[0].'`', '%'.$var[1].'%', (isset($var[2])?$var[2]:'LIKE')));
+    			} elseif (	$object->vars[$var[0]]['data_type']==XOBJ_DTYPE_INT || 
+    						$object->vars[$var[0]]['data_type']==XOBJ_DTYPE_DECIMAL || 
+    						$object->vars[$var[0]]['data_type']==XOBJ_DTYPE_FLOAT ) 	{
+    				$criteria->add(new Criteria('`'.$var[0].'`', $var[1], (isset($var[2])?$var[2]:'=')));			
+				} elseif (	$object->vars[$var[0]]['data_type']==XOBJ_DTYPE_ENUM ) 	{
+    				$criteria->add(new Criteria('`'.$var[0].'`', $var[1], (isset($var[2])?$var[2]:'=')));    				
+				} elseif (	$object->vars[$var[0]]['data_type']==XOBJ_DTYPE_ARRAY ) 	{
+    				$criteria->add(new Criteria('`'.$var[0].'`', '%"'.$var[1].'";%', (isset($var[2])?$var[2]:'LIKE')));    				
+				}
+    		} elseif (!empty($var[1])&&is_numeric($var[0])) {
+    			$criteria->add(new Criteria($var[0], $var[1]));
+    		}
+    	}
+    	return $criteria;
+    }
+       
+    function getFilterForm($filter, $field, $sort='created') {
+    	$ele = tweetbomb_getFilterElement($filter, $field, $sort);
+    	if (is_object($ele))
+    		return $ele->render();
+    	else 
+    		return '&nbsp;';
+    }
+
+    function getRootConnection()
+	{
+		return $this->_connection = new TwitterOAuth($GLOBALS['xoopsModuleConfig']['consumer_key'], $GLOBALS['xoopsModuleConfig']['consumer_secret'], $GLOBALS['xoopsModuleConfig']['access_token'], $GLOBALS['xoopsModuleConfig']['access_token_secret']);
+	}
+
+	function getTrend($type='')
+	{
+		if (!is_a($this->_connection, 'TwitterOAuth'))
+			$this->getRootConnection();
+			
+		if (is_a($this->_connection, 'TwitterOAuth')) {
+			$trends = twitterbomb_object2array($this->_connection->get('trends'.(!empty($type)?'/'.$type:''), array()));
+			switch ($this->_connection->http_code) {
+		  		case 200:
+		    		return $trends; 
+		    		break;
+		  		default:
+		    		return array();
+		    		break;
+			}
+		} else 
+			return array();
+	}
+	
+    function getTempAuthenticaton()
+    {
+	    $this->_connection = new TwitterOAuth($GLOBALS['xoopsModuleConfig']['consumer_key'], $GLOBALS['xoopsModuleConfig']['consumer_secret']);
+	 
+		/* Get temporary credentials. */
+		$request_token = $this->_connection->getRequestToken($GLOBALS['xoopsModuleConfig']['callback_url']);
+		
+		/* Save temporary credentials to file cache. */
+		XoopsCache::write('twitterbomb_tmp_cred_'.$this->_user['uid'].'_'.$this->_user['md5'], $request_token);
+		 
+		/* If last connection failed don't display authorization link. */
+		switch ($this->_connection->http_code) {
+		  case 200:
+		    /* Build authorize URL and redirect user to Twitter. */
+		    $url = $this->_connection->getAuthorizeURL($request_token['oauth_token']);
+		    header('Location: ' . $url); 
+		    break;
+		  default:
+		    /* Show notification if something went wrong. */
+		  	xoops_loadLanguage('errors', 'twitterbomb');
+		    require_once($GLOBALS['xoops']->path('/header.php'));
+		    xoops_error(_ERR_TWEETBOMB_COULDNT_CONNECT, _ERR_TWEETBOMB_COULDNT_CONNECT_TITLE);
+		    require_once($GLOBALS['xoops']->path('/footer.php'));
+		    XoopsCache::delete('twitterbomb_tmp_cred_'.$this->_user['uid'].'_'.$this->_user['md5']);
+		    exit(0);
+		}
+    }
+    
+    function getAuthentication($input) {
+    	
+    	if ($request_token=XoopsCache::read('twitterbomb_tmp_cred_'.$this->_user['uid'].'_'.$this->_user['md5']))
+    	{
+	    	/* If the oauth_token is old redirect to the connect page. */
+			if (isset($input['oauth_token']) && $request_token['oauth_token'] !== $input['oauth_token']) {
+				xoops_loadLanguage('errors', 'twitterbomb');
+				redirect_header(XOOPS_URL.'/modules/twitterbomb/', 10, _ERR_TWEETBOMB_TOKEN_OLDTOKEN);
+				exit(0);
+			}
+			
+			/* Create TwitteroAuth object with app key/secret and token key/secret from default phase */
+			$this->_connection = new TwitterOAuth($GLOBALS['xoopsModuleConfig']['consumer_key'], $GLOBALS['xoopsModuleConfig']['consumer_secret'], $request_token['oauth_token'], $request_token['oauth_token_secret']);
+			
+			/* Request access tokens from twitter */
+			$access_token = $this->_connection->getAccessToken($input['oauth_verifier']);
+			
+			/* Remove no longer needed request tokens */
+			XoopsCache::delete('twitterbomb_tmp_cred_'.$this->_user['uid'].'_'.$this->_user['md5']);
+			
+			/* If HTTP response is 200 continue otherwise send to connect page to retry */
+			if (200 == $this->_connection->http_code) {
+				$oauth = parent::create();
+				$oauth->setVar('uid', $this->_user['uid']);
+				$oauth->setVar('ip', $this->_user['ip']);
+				$oauth->setVar('netbios', $this->_user['netbios']);
+				$oauth->setVar('oauth_token', $access_token->key);
+				$oauth->setVar('oauth_token_secret', $access_token->secret);
+				$oauth->setVar('consumer_key', $GLOBALS['xoopsModuleConfig']['consumer_key']);
+				$oauth->setVar('consumer_secret', $GLOBALS['xoopsModuleConfig']['consumer_secret']);
+				$oauth->setVar('mode', 'valid');
+			  	/* The user has been verified and the access tokens can be saved for future use */
+				$oid = parent::insert($oauth, true);
+				redirect_header(XOOPS_URL.'/modules/twitterbomb/trail.php?oid='.$oid, 10, _ERR_TWEETBOMB_CHOOSEYOUR_TRAIL);
+			} else {
+			  	/* Save HTTP status for error dialog on connnect page.*/
+			  	$oauth->setVar('mode', 'invalid');
+			  	/* Show notification if something went wrong. */
+			  	xoops_loadLanguage('errors', 'twitterbomb');
+			    require_once($GLOBALS['xoops']->path('/header.php'));
+			    xoops_error(_ERR_TWEETBOMB_COULDNT_CONNECT, _ERR_TWEETBOMB_COULDNT_CONNECT_TITLE);
+			    require_once($GLOBALS['xoops']->path('/footer.php'));
+			}
+    	} else {
+		  	xoops_loadLanguage('errors', 'twitterbomb');
+		    require_once($GLOBALS['xoops']->path('/header.php'));
+		    xoops_error(_ERR_TWEETBOMB_CACHE_EMPTY, _ERR_TWEETBOMB_CACHE_EMPTY_TITLE);
+		    require_once($GLOBALS['xoops']->path('/footer.php'));
+    	}
+    	exit(0);
+    }
+}
+?>
