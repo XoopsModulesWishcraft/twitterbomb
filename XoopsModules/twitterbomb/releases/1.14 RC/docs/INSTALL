@@ -1,0 +1,24 @@
++-----------------------------------------------------------------------------------+
+|                                                                                   |
+|  TwitterBomb Version 1.14 RC 								                        |
+|                                                                                   |
++--[ Step 1 - Installing Cron ]-----------------------------------------------------+
+|                                                                                   |
+| You will need to install the following cron within your cronjobs section of your  |
+| Wesite, if you are using a windows server in WAMP then you will need to schedule  |
+| this as a task, remember to change the path to suit your configuration.           |
+|                                                                                   |
+| command to run every minute to once a minute, make sure it is within your         |
+| refresh time. This is the or unix based systems after it is for windows:          |
+|                                                                                   |
+|  /usr/bin/php -q /home/yoursite/public_html/modules/twitterbomb/cron/all.php      |
+|                                                                                   |
+| Assuming you have your PHP added to your executable path this is the scheduled    |
+| task to run on a windows environment:                                             |
+|                                                                                   |
+|  php.exe -q c:\htdocs\modules\twitterbomb\cron\all.php      		                |
+|                                                                                   |
+| Some of the paths in these examples for executables or the cron file may be       |
+| different and you will have to alter them to your needs.	                        |
+|                                                                                   |
++-----------------------------------------------------------------------------------+
