@@ -80,6 +80,7 @@ $tpl = new XoopsTpl();
 	
 	if ($campaign->getVar('timed')!=0) {
 		if ($campaign->getVar('start')<time()&&$campaign->getVar('end')>time()) {
+			
 			if (!$sarray = XoopsCache::read('tweetbomb_'.$campaign->getVar('type').'_'.$cacheid)) {
 				switch ($campaign->getVar('type')) {
 					default:
@@ -93,6 +94,7 @@ $tpl = new XoopsTpl();
 			    		break;	
 				} 
 		    }
+		    
 		} else {
 			$sarray=array();
 			$sarray[0]['title'] = sprintf(_MN_TWEETBOMB_RSS_TIMED_TITLE, date('Y-m-d', $campaign->getVar('start')), date('Y-m-d', $campaign->getVar('end')));
@@ -100,19 +102,25 @@ $tpl = new XoopsTpl();
 			$sarray[0]['description'] = sprintf(_MN_TWEETBOMB_RSS_TIMED_DESCRIPTION, date('Y-m-d', $campaign->getVar('start')), date('Y-m-d', $campaign->getVar('end')));		
 		}
 	} else {
+		
 		if (!$sarray = XoopsCache::read('tweetbomb_'.$campaign->getVar('type').'_'.$cacheid)) {
 			switch ($campaign->getVar('type')) {
 				default:
 				case 'bomb':
+					
 					$sarray = twitterbomb_get_rss($GLOBALS['xoopsModuleConfig']['items'], $cid, $catid);
 	    			XoopsCache::write('tweetbomb_'.$campaign->getVar('type').'_'.$cacheid, $sarray, $GLOBALS['xoopsModuleConfig']['cache']);
+	    			
 	    			break;
 				case 'scheduler':
+					
 					$sarray = twitterbomb_get_scheduler_rss($GLOBALS['xoopsModuleConfig']['scheduler_items'], $cid, $catid);
 	    			XoopsCache::write('tweetbomb_'.$campaign->getVar('type').'_'.$cacheid, $sarray, $GLOBALS['xoopsModuleConfig']['scheduler_cache']);
+	    			
 	    			break;	
 			} 
 	    }
+	    
 	}
 	
     if (!empty($sarray) && is_array($sarray)) {
@@ -134,7 +142,7 @@ $tpl = new XoopsTpl();
             }
         }
     }
-    
+
 header('Content-Type:text/xml; charset=utf-8');
 $tpl->display('db:twitterbomb_rss.html');
 ?>

@@ -52,7 +52,7 @@ class TwitterBombLog extends XoopsObject
     		if (is_object($category))
     			$ret['catid_text'] = $category->getVar('name');
     	}
-    	if ($GLOBALS['xoopsModuleConfig']['tags']) {
+    	if ($this->_modConfig['tags']) {
 	    	include_once XOOPS_ROOT_PATH."/modules/tag/include/tagbar.php";
 			$ret['tagbar'] = tagBar($this->getVar('lid'), $this->getVar('catid'));
     	}
@@ -113,10 +113,19 @@ class TwitterBombLog extends XoopsObject
 */
 class TwitterBombLogHandler extends XoopsPersistableObjectHandler
 {
+	var $_mod = NULL;
+	var $_modConfig = array();
+	
     function __construct(&$db) 
     {
 		$this->db = $db;
         parent::__construct($db, 'twitterbomb_log', 'TwitterBombLog', "lid", "tweet");
+        
+        $module_handler = xoops_gethandler('module');
+		$config_handler = xoops_gethandler('config');
+		$this->_mod = $module_handler->getByDirname('twitterbomb');
+		$this->_modConfig = $config_handler->getConfigList($this->_mod->getVar('mid'));
+        
     }
 	
     private function getAlias($object) {
@@ -137,7 +146,7 @@ class TwitterBombLogHandler extends XoopsPersistableObjectHandler
     
 	function recalc() {
     	// Recalculating Ranking Tweets
-    	if ($GLOBALS['xoopsModuleConfig']['number_to_rank']!=0) {
+    	if ($this->_modConfig['number_to_rank']!=0) {
     		// Reset Rank
 	   		$sql = "UPDATE ".$GLOBALS['xoopsDB']->prefix('twitterbomb_log'). 'SET `rank` = 0 WHERE `rank` <> 0';
 	   		@$GLOBALS['xoopsDB']->queryF($sql);
@@ -146,8 +155,8 @@ class TwitterBombLogHandler extends XoopsPersistableObjectHandler
 		    $criteria->setOrder('DESC');
 		    $criteria->setSort('`hits`, `lid`');
 		    $criteria->setStart(0);
-		    $criteria->setLimit($GLOBALS['xoopsModuleConfig']['number_to_rank']);
-		    $rank = parent::getCount($criteria);
+		    $criteria->setLimit($this->_modConfig['number_to_rank']);
+		    $rank = $this->_modConfig['number_to_rank'];
 		    $objs = parent::getObjects($criteria, true);
 		    foreach($objs as $lid=>$obj) {
 		    	$obj->setVar('rank', $rank);
@@ -159,21 +168,9 @@ class TwitterBombLogHandler extends XoopsPersistableObjectHandler
 	}
 	
     function insert($object, $force = true) {
-		$module_handler = xoops_gethandler('module');
-		$config_handler = xoops_gethandler('config');
-		$xoModule = $module_handler->getByDirname('twitterbomb');
-		$xoConfig = $config_handler->getConfigList($xoModule->getVar('mid'));
 		
-		$criteria = new Criteria('`date`', time()-$xoConfig['logdrops'], '<=');
-		$objs = $this->getObjects($criteria, true);
-		if (count($objs)>0){
-			foreach($objs as $lid => $obj){
-				if ($this->delete($obj)&&$GLOBALS['xoopsModuleConfig']['tags']) {
-    				$tag_handler = xoops_getmodulehandler('tag', 'tag');
-					$tag_handler->updateByItem('', $lid, $GLOBALS['xoopsModule']->getVar("dirname"), $obj->getVar('catid'));
-    			}
-			}
-		}
+		$criteria = new Criteria('`date`', time()-$this->_modConfig['logdrops'], '<=');
+		parent::deleteAll($criteria, $force);
 		
     	if ($object->isNew()) {
     		$object->setVar('date', time());
@@ -190,7 +187,7 @@ class TwitterBombLogHandler extends XoopsPersistableObjectHandler
 			$run_plugin_action=true;
 		}
     	if ($run_plugin_action){
-    		if ($object->runPrePlugin($xoConfig['save_'.$object->getVar('provider')])==true)
+    		if ($object->runPrePlugin($this->_modConfig['save_'.$object->getVar('provider')])==true)
     			$lid = parent::insert($object, $force);
     		else 
     			return false;

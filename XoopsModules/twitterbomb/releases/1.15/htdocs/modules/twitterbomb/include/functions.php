@@ -177,7 +177,6 @@ if (!function_exists('twitterbomb_get_rss')) {
 		$c=0;
 		while(count($ret)<$items&&$looped<$items*2) {
 			$sentence = $base_matrix_handler->getSentence($cid, $catid);
-			print_r($sentence);
 			$username = $usernames_handler->getUser($cid, $catid);
 			$url = $urls_handler->getUrl($cid, $catid);
 			if (count($ret)<$items) {

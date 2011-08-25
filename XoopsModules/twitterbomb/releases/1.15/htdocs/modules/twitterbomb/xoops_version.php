@@ -196,6 +196,8 @@ $modversion['templates'][21]['file'] = 'twitterbomb_cpanel_scheduler_list.html';
 $modversion['templates'][21]['description'] = 'Main Control Panel Twitter Bomb Scheduler List';
 $modversion['templates'][22]['file'] = 'twitterbomb_cpanel_log.html';
 $modversion['templates'][22]['description'] = 'Main Control Panel Twitter Bomb Log List';
+$modversion['templates'][23]['file'] = 'twitterbomb_trail.html';
+$modversion['templates'][23]['description'] = 'User Area Twitter Authorisation Trail Notice';
 
 // Menu
 $i = 0;
