@@ -11,7 +11,7 @@ if (!defined('XOOPS_ROOT_PATH')) {
  */
 class TwitterbombScheduler extends XoopsObject
 {
-
+	
     function TwitterbombScheduler($fid = null)
     {
         $this->initVar('sid', XOBJ_DTYPE_INT, 0, false);
@@ -33,6 +33,7 @@ class TwitterbombScheduler extends XoopsObject
 		$this->initVar('created', XOBJ_DTYPE_INT, null, false);
 		$this->initVar('actioned', XOBJ_DTYPE_INT, null, false);
 		$this->initVar('updated', XOBJ_DTYPE_INT, null, false);
+		
    	}
 
 	function getForm() {
@@ -54,8 +55,8 @@ class TwitterbombScheduler extends XoopsObject
 		$ele['pregmatch'] = new XoopsFormText('', $ret['sid'].'[pregmatch]', 25, 500, $this->getVar('pregmatch'));
 		$ele['pregmatch_replace'] = new XoopsFormText('', $ret['sid'].'[pregmatch_replace]', 25, 500, $this->getVar('pregmatch_replace'));
 		$ele['hits'] = new XoopsFormLabel('', $ret['hits']);
-		$ele['rank'] = new XoopsFormLabel('', number_format(($this->getVar('rank')/$GLOBALS['xoopsModuleConfig']['number_to_rank'])*100, 2).'%');
-	    if ($GLOBALS['xoopsModuleConfig']['tags']) {
+		$ele['rank'] = new XoopsFormLabel('', number_format(($this->getVar('rank')/$this->_modConfig['number_to_rank'])*100, 2).'%');
+	    if ($this->_modConfig['tags']) {
 	    	$log_handler = xoops_getmodulehandler('log', 'twitterbomb');
 	    	if ($log_handler->getCount(new Criteria('sid', $this->getVar('sid')))>0) {
 	    		$logs = $log_handler->getObjects(new Criteria('sid', $this->getVar('sid')), false);
@@ -201,9 +202,17 @@ class TwitterbombScheduler extends XoopsObject
 */
 class TwitterbombSchedulerHandler extends XoopsPersistableObjectHandler
 {
-    function __construct(&$db) 
+	var $_mod = NULL;
+	var $_modConfig = array();
+	
+	function __construct(&$db) 
     {
         parent::__construct($db, "twitterbomb_scheduler", 'TwitterbombScheduler', "sid", "text");
+        
+        $module_handler = xoops_gethandler('module');
+		$config_handler = xoops_gethandler('config');
+		$this->_mod = $module_handler->getByDirname('twitterbomb');
+		$this->_modConfig = $config_handler->getConfigList($this->_mod->getVar('mid'));
     }
 	
     function insert($obj, $force=true) {
@@ -277,6 +286,8 @@ class TwitterbombSchedulerHandler extends XoopsPersistableObjectHandler
     }
     
     function getObjects($criteria, $id_as_key=false, $as_object=true) {
+    	if ($criteria->limit==0)
+    		$criteria->setLimit($this->_modConfig['scheduler_items']);
 	   	$objs = parent::getObjects($criteria, $id_as_key, $as_object);
     	foreach($objs as $id => $obj) {
     		if (is_object($obj))
@@ -297,7 +308,7 @@ class TwitterbombSchedulerHandler extends XoopsPersistableObjectHandler
 	
     function recalc() {
     	// Recalculating Ranking Tweets
-    	if ($GLOBALS['xoopsModuleConfig']['number_to_rank']!=0) {
+    	if ($this->_modConfig['number_to_rank']!=0) {
     		// Reset Rank
 	   		$sql = "UPDATE ".$GLOBALS['xoopsDB']->prefix('twitterbomb_scheduler'). 'SET `rank` = 0 WHERE `rank` <> 0';
 	   		@$GLOBALS['xoopsDB']->queryF($sql);
@@ -306,8 +317,8 @@ class TwitterbombSchedulerHandler extends XoopsPersistableObjectHandler
 		    $criteria->setOrder('DESC');
 		    $criteria->setSort('`hits`, `sid`');
 		    $criteria->setStart(0);
-		    $criteria->setLimit($GLOBALS['xoopsModuleConfig']['number_to_rank']);
-		    $rank = $GLOBALS['xoopsModuleConfig']['number_to_rank'];
+		    $criteria->setLimit($this->_modConfig['number_to_rank']);
+		    $rank = $this->_modConfig['number_to_rank'];
 		    $objs = parent::getObjects($criteria, true);
 		    foreach($objs as $sid=>$obj) {
 		    	$obj->setVar('rank', $rank);
@@ -317,9 +328,9 @@ class TwitterbombSchedulerHandler extends XoopsPersistableObjectHandler
     	}
     	
     	// Kill Old Tweets
-    	if ($GLOBALS['xoopsModuleConfig']['kill_tweeted']!=0) {
-	    	$criteria = new CriteriaCompo(new Criteria('tweeted', time()-$GLOBALS['xoopsModuleConfig']['kill_tweeted'], '<'));
-	    	$criteria->add(new Criteria('when', time()-$GLOBALS['xoopsModuleConfig']['kill_tweeted'], '<'));
+    	if ($this->_modConfig['kill_tweeted']!=0) {
+	    	$criteria = new CriteriaCompo(new Criteria('tweeted', time()-$this->_modConfig['kill_tweeted'], '<'));
+	    	$criteria->add(new Criteria('when', time()-$this->_modConfig['kill_tweeted'], '<'));
 	    	$criteria->add(new Criteria('rank', 0, '='));
 	    	$criteria->add(new Criteria('when', 0, '>'));
 	    	$criteria->add(new Criteria('tweeted', 0, '>'));

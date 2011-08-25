@@ -291,32 +291,27 @@ class TwitterbombOauth extends XoopsObject
 		return $ids;
 	}
 
-	function getMentions($for_tweet=false) {
+	function getMentions($for_tweet=false, $page = 1) {
 		if (!is_a($this->_connection, 'TwitterOAuth'))
 			@$this->getConnection($for_tweet);
 
 		$mentions = array();
 		if (is_a($this->_connection, 'TwitterOAuth')) {
-			$page = 1;
 			while($page!=0&&$this->getVar('remaining_hits')>0) {
 				$mention = twitterbomb_object2array($this->_connection->get('statuses/mentions', 	array('count'=>200, 'include_entities '=>'true', 'contributor_details'=>'true')));
-				if (empty($mention[0]['user']))	
-					$page = 0;
 				switch ($this->_connection->http_code) {
 			  		case 200:
 			  			$this->increaseCall(1);
-		    			if ($page!=0)
-							$page++; 
-			  			$mentions = array_merge($mentions, $mention); 
+		    			return $mention; 
 			    		break;
 			  		default:
-			    		$page=0;
+			    		return false;
 			    		break;
 				}
 			}
 		} else 
-			return $mentions;
-		return $mentions;
+			return false;
+		return false;
 	}
 	
 	

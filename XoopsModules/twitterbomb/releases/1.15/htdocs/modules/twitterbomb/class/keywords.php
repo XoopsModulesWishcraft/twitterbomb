@@ -129,6 +129,10 @@ class TwitterbombKeywords extends XoopsObject
 */
 class TwitterbombKeywordsHandler extends XoopsPersistableObjectHandler
 {
+	
+	var $_mod = NULL;
+	var $_modConfig = array();
+	
     function __construct(&$db) 
     {
         parent::__construct($db, "twitterbomb_keywords", 'TwitterbombKeywords', "kid", "keyword");
@@ -141,6 +145,11 @@ class TwitterbombKeywordsHandler extends XoopsPersistableObjectHandler
 				include_once XOOPS_ROOT_PATH.'/class/cache/xoopscache.php';
 			}
 		}
+		
+		$module_handler = xoops_gethandler('module');
+		$config_handler = xoops_gethandler('config');
+		$this->_mod = $module_handler->getByDirname('twitterbomb');
+		$this->_modConfig = $config_handler->getConfigList($this->_mod->getVar('mid'));
     }
 	
     function insert($obj, $force=true) {
@@ -211,14 +220,14 @@ class TwitterbombKeywordsHandler extends XoopsPersistableObjectHandler
 		    	}
 		    	break;
 			case 'trend':
-				if (!$trend = XoopsCache::read('twitterbomb_trends_'.$GLOBALS['xoopsModuleConfig']['trend_type'])) {
+				if (!$trend = XoopsCache::read('twitterbomb_trends_'.$this->_modConfig['trend_type'])) {
 					$oauth_handler = xoops_getmodulehandler('oauth', 'twitterbomb');
-					$trend = $oauth_handler->getTrend($GLOBALS['xoopsModuleConfig']['trend_type']);
+					$trend = $oauth_handler->getTrend($this->_modConfig['trend_type']);
 					if (!empty($trend))
-						XoopsCache::write('twitterbomb_trends_'.$GLOBALS['xoopsModuleConfig']['trend_type'], $trend, $GLOBALS['xoopsModuleConfig']['keep_trend_for']);
+						XoopsCache::write('twitterbomb_trends_'.$this->_modConfig['trend_type'], $trend, $this->_modConfig['keep_trend_for']);
 				}
 				if (!empty($trend)) {
-					switch ($GLOBALS['xoopsModuleConfig']['trend_type']) {
+					switch ($this->_modConfig['trend_type']) {
 						case '':
 							return $trend['trends'][mt_rand(0, 9)]['name'];
 							break;

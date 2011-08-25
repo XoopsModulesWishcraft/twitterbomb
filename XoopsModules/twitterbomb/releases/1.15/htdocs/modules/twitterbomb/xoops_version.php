@@ -595,6 +595,13 @@ $modversion['config'][$i]['formtype'] = 'text';
 $modversion['config'][$i]['valuetype'] = 'int';
 $modversion['config'][$i]['default'] = 10;
 
+$i++;
+$modversion['config'][$i]['name'] = 'follow_per_session';
+$modversion['config'][$i]['title'] = "_MI_TWEETBOMB_FOLLOW_PER_SESSION";
+$modversion['config'][$i]['description'] = "_MI_TWEETBOMB_FOLLOW_PER_SESSION_DESC";
+$modversion['config'][$i]['formtype'] = 'text';
+$modversion['config'][$i]['valuetype'] = 'int';
+$modversion['config'][$i]['default'] = 10;
 
 $i++;
 $modversion['config'][$i]['name'] = 'salt';

@@ -239,5 +239,7 @@
 	define('_MI_TWEETBOMB_BITLY_APIURL_DESC', 'Bit.ly API URLS (Do Not Change)');
 	define('_MI_TWEETBOMB_USER_AGENT', 'Useragent');
 	define('_MI_TWEETBOMB_USER_AGENT_DESC', 'User agent for curl sessions');
+	define('_MI_TWEETBOMB_FOLLOW_PER_SESSION', 'How many usernames to process per cron session for new following');
+	define('_MI_TWEETBOMB_FOLLOW_PER_SESSION_DESC', 'Number of usernames to process per cron session for new friends and following.');
 	
 	?>

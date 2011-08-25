@@ -10,6 +10,7 @@ $xoConfig = $config_handler->getConfigList($xoModule->getVar('mid'));
 $GLOBALS['execution_time'] = $GLOBALS['execution_time'] + 30;
  
 if ($xoConfig['cron_gather']) {
+	echo 'Gather Cron Stage 1 Started: '.date('Y-m-d D H:i:s', time())."\n";
 	xoops_load('xoopscache');
 	if (!class_exists('XoopsCache')) {
 		// XOOPS 2.4 Compliance
@@ -34,7 +35,7 @@ if ($xoConfig['cron_gather']) {
 	$criteria->setSort('RAND()');
 	$oauths = $oauth_handler->getObjects($criteria, true);
 	foreach($oauths as $oid => $oauth) {
-		$GLOBALS['execution_time'] = $GLOBALS['execution_time'] + 120;
+		$GLOBALS['execution_time'] = $GLOBALS['execution_time'] + 240;
 		set_time_limit($GLOBALS['execution_time']);
 		if ($oauth->getVar('friends')<time()&&$xoConfig['look_for_friends']>0) {
 			if ($oauth->getVar('id') == 0) {
@@ -45,7 +46,7 @@ if ($xoConfig['cron_gather']) {
 			}
 			if ($ids = $oauth->getFriends($oauth->getVar('id'))) {
 				foreach($ids as $id) {
-					if ($following_handler->getCount(new Criteria('flid', $id))==0) {
+					if ($following_handler->getCount(new Criteria('flid', $id))==0&&$usernames_handler->getCount(new Criteria('id', $id))==0) {
 						$flid[$id] = $id;
 					}
 				}
@@ -64,7 +65,7 @@ if ($xoConfig['cron_gather']) {
 						$username->setVar('description', $user['description']);
 						$username->setVar('type' ,'bomb');
 						$usernames_handler->insert($username, true);
-						echo 'Found: '.$user['screen_name'].'\n';
+						echo 'Found: '.$user['screen_name']."\n";
 					}	
 				}
 			}
@@ -72,7 +73,7 @@ if ($xoConfig['cron_gather']) {
 		} else {
 			$oids[$oid] = $oid;
 		}
-		 
+ 
 		if ($oauth->getVar('mentions')<time()&&$xoConfig['look_for_mention']>0) {
 			$GLOBALS['execution_time'] = $GLOBALS['execution_time'] + 120;
 			set_time_limit($GLOBALS['execution_time']);
@@ -87,7 +88,7 @@ if ($xoConfig['cron_gather']) {
 					$ids[$mention['user']['id']] = $mention['user']['id'];
 				}		
 				foreach($ids as $id) {
-					if ($following_handler->getCount(new Criteria('flid', $id))==0) {
+					if ($following_handler->getCount(new Criteria('flid', $id))==0&&$usernames_handler->getCount(new Criteria('id', $id))==0) {
 						$flid[$id] = $id;
 					}
 				}
@@ -106,7 +107,7 @@ if ($xoConfig['cron_gather']) {
 						$username->setVar('description', $user['description']);
 						$username->setVar('type' ,'bomb');
 						$usernames_handler->insert($username, true);
-						echo 'Found: '.$user['screen_name'].'\n';
+						echo 'Found: '.$user['screen_name']."\n";
 					}	
 				}
 			}
@@ -121,11 +122,15 @@ if ($xoConfig['cron_gather']) {
 		XoopsCache::write('twitterbomb_oids_cron', $oids);
 	}
 	
+	echo 'Gather Cron Stage 2 Started: '.date('Y-m-d D H:i:s', time())."\n";
+	
 	@$oauth = $oauth_handler->getRootOauth(true);
 	$GLOBALS['execution_time'] = $GLOBALS['execution_time'] + 120;
 	set_time_limit($GLOBALS['execution_time']);
 
 	$criteria = new Criteria('indexed', time(), '<=');
+	$criteria->setSort(`indexed`);
+	$criteria->setOrder('DESC');
 	$criteria->setLimit($xoConfig['gather_per_session']);
 	$usernames = $usernames_handler->getObjects($criteria, true);
 	foreach($usernames as $uid => $username) {
@@ -160,7 +165,7 @@ if ($xoConfig['cron_gather']) {
 					$usernam->setVar('name', $user['name']);
 					$usernam->setVar('description', $user['description']);
 					$usernam->setVar('type' ,'bomb');
-					echo 'Found: '.$user['screen_name'].'\n';
+					echo 'Found: '.$user['screen_name']."\n";
 					$usernames_handler->insert($usernam, true);
 				}	
 			}
@@ -168,5 +173,6 @@ if ($xoConfig['cron_gather']) {
 		$username->setVar('indexed', time()+$xoConfig['look_for_friends']);
 		$usernames_handler->insert($username, true);
 	}
+	echo 'Gather Cron Ended: '.date('Y-m-d D H:i:s', time())."\n";
 }
 ?>

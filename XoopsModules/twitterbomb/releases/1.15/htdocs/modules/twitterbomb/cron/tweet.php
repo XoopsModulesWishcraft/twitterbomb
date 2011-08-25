@@ -13,6 +13,7 @@ $xoModule = $module_handler->getByDirname('twitterbomb');
 $xoConfig = $config_handler->getConfigList($xoModule->getVar('mid'));
 
 if ($xoConfig['cron_tweet']) {
+	echo 'Tweeter Cron Started: '.date('Y-m-d D H:i:s', time())."\n";
 	xoops_load('xoopscache');
 	if (!class_exists('XoopsCache')) {
 		// XOOPS 2.4 Compliance
@@ -38,6 +39,7 @@ if ($xoConfig['cron_tweet']) {
 	$criteria->setOrder('DESC');
 	$criteria->setSort('RAND()');
 	$campaigns = $campaign_handler->getObjects($criteria, true);
+	$campaignCount = $campaign_handler->getCount($criteria);
 	$cids=array();
 	foreach($campaigns as $cid => $campaign) {
 		$GLOBALS['execution_time'] = $GLOBALS['execution_time'] + 30;
@@ -48,7 +50,7 @@ if ($xoConfig['cron_tweet']) {
 				case "bomb":
 					$items = 0;
 					$ret = array();
-					while($xoConfig['items']<$items&&$c<=$xoConfig['tweets_per_session']) {
+					while((($xoConfig['tweets_per_session']/$campaignCount)*(($xoConfig['items']+$xoConfig['items_scheduler'])/$xoConfig['items']))>$items&&$c<=$xoConfig['tweets_per_session']) {
 						$sentence = $base_matrix_handler->getSentence($cid, $catid);
 						$username = $usernames_handler->getUser($cid, $catid);
 						$url = $urls_handler->getUrl($cid, $catid);
@@ -94,7 +96,7 @@ if ($xoConfig['cron_tweet']) {
 				case "scheduler":
 					$items=0;
 					$ret = array();
-					while($xoConfig['scheduler_items']>$items&&$c<=$xoConfig['tweets_per_session']) {
+					while((($xoConfig['tweets_per_session']/$campaignCount)*(($xoConfig['items']+$xoConfig['items_scheduler'])/$xoConfig['items_scheduler']))>$items&&$c<=$xoConfig['tweets_per_session']) {
 						$sentence = $scheduler_handler->getTweet($cid, $catid, 0, 0);
 						if (is_array($sentence)) {
 							$url = $urls_handler->getUrl($cid, $catid);
@@ -149,6 +151,7 @@ if ($xoConfig['cron_tweet']) {
 	} else {
 		XoopsCache::write('twitterbomb_cids_cron', $cids);
 	}
+	echo 'Tweeter Cron Ended: '.date('Y-m-d D H:i:s', time())."\n";
 }
 
 ?>
