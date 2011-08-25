@@ -63,7 +63,7 @@ function b_twitterbomb_block_scheduler_edit( $options )
 	$campaign = new TwitterBombFormSelectCampaigns('', 'options[]', $options[0], 1, false, false, 'scheduler');
 	$form = ""._BL_TWITTERBOMB_CID."&nbsp;".$campaign->render();
 	$display = new XoopsFormText('', 'options[]', 10,15, $options[1]);
-	$form = ""._BL_TWITTERBOMB_DISPLAY."&nbsp;".$display->render();
+	$form .= "<br/>"._BL_TWITTERBOMB_DISPLAY."&nbsp;".$display->render();
 	
 	return $form ;
 }
