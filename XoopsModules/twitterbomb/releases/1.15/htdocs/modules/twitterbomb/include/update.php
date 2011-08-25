@@ -101,6 +101,7 @@ $sql[] = "CREATE TABLE `".$GLOBALS['xoopsDB']->prefix('twitterbomb_scheduler')."
   `oauth_token_secret` VARCHAR(255) DEFAULT NULL,
   `username` VARCHAR(64) DEFAULT NULL,
   `ip` VARCHAR(64) DEFAULT NULL,
+  `id` VARCHAR(255) DEFAULT '0',
   `netbios` VARCHAR(255) DEFAULT NULL,
   `uid` INT(13) UNSIGNED DEFAULT '0', 
   `created` INT(13) UNSIGNED DEFAULT '0', 
