@@ -133,6 +133,7 @@ CREATE TABLE `twitterbomb_campaign` (
   `created` INT(13) UNSIGNED DEFAULT '0',
   `updated` INT(13) UNSIGNED DEFAULT '0',
   `active` INT(13) UNSIGNED DEFAULT '0',
+  `cron` INT(13) UNSIGNED DEFAULT '0',
   `type` ENUM('bomb','scheduler') DEFAULT 'bomb',
   PRIMARY KEY (`cid`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;

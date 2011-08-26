@@ -148,12 +148,12 @@ class TwitterBombLogHandler extends XoopsPersistableObjectHandler
     	// Recalculating Ranking Tweets
     	if ($this->_modConfig['number_to_rank']!=0) {
     		// Reset Rank
-	   		$sql = "UPDATE ".$GLOBALS['xoopsDB']->prefix('twitterbomb_log'). 'SET `rank` = 0 WHERE `rank` <> 0';
+	   		$sql = "UPDATE ".$GLOBALS['xoopsDB']->prefix('twitterbomb_log'). ' SET `rank` = 0 WHERE `rank` <> 0';
 	   		@$GLOBALS['xoopsDB']->queryF($sql);
 	    	//Recalculate rank
-    		$criteria = new CriteriaCompo(new Criteria('hits', 0, '>'));
+    		$criteria = new CriteriaCompo(new Criteria('`hits`', 0, '>'));
 		    $criteria->setOrder('DESC');
-		    $criteria->setSort('`hits`, `lid`');
+		    $criteria->setSort('`hits`');
 		    $criteria->setStart(0);
 		    $criteria->setLimit($this->_modConfig['number_to_rank']);
 		    $rank = $this->_modConfig['number_to_rank'];

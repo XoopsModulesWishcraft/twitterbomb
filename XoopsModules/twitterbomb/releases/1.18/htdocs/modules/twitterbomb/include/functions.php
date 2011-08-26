@@ -350,7 +350,7 @@ if (!function_exists('tweetbomb_getFilterElement')) {
 	}
 }
 
-if (!function_exists('tweetbomb_getFilterComponents')) {
+if (!function_exists('tweetbomb_getFilterURLComponents')) {
 	function tweetbomb_getFilterURLComponents($filter, $field, $sort='created') {
 		$parts = explode('|', $filter);
 		$ret = array();

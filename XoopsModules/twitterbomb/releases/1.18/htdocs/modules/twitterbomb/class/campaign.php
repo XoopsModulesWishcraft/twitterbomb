@@ -26,6 +26,7 @@ class TwitterbombCampaign extends XoopsObject
 		$this->initVar('created', XOBJ_DTYPE_INT, null, false);
 		$this->initVar('updated', XOBJ_DTYPE_INT, null, false);
 		$this->initVar('active', XOBJ_DTYPE_INT, null, false);
+		$this->initVar('cron', XOBJ_DTYPE_INT, null, false);
 		$this->initVar('type', XOBJ_DTYPE_ENUM, 'bomb', false, false, false, array('bomb','scheduler'));
 	}
 
@@ -70,6 +71,12 @@ class TwitterbombCampaign extends XoopsObject
 			$ret['form'][$key] = $ele[$key]->render(); 
 		}
 		return $ret;
+	}
+	
+	function setCron() {
+		$sql = "UPDATE ".$GLOBALS['xoopsDB']->prefix('twitterbomb_campaign'). ' SET `cron` = "'.time().'" WHERE `cid` = '.$this->getVar('cid');
+		$GLOBALS['xoopsDB']->queryF($sql);
+		$this->vars['cron']['value'] = time();
 	}
 	
 }

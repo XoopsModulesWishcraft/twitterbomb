@@ -143,7 +143,11 @@ class TwitterbombOauth extends XoopsObject
 		if (is_a($this->_connection, 'TwitterOAuth')&&$this->getVar('remaining_hits')>0) {
 			$tweet = twitterbomb_object2array($this->_connection->post('statuses/update', 	array(	'status'=>substr($tweet,0, (!empty($url)?126:140)).' '.$url,
 																									'wrap_links' => 'true' 
-																							)));
+					 )));
+			
+			if (isset($tweet['error'])&&!empty($tweet['error']))
+				return false;
+				
 			switch ($this->_connection->http_code) {
 		  		case 200:
 		    		$this->increaseTweets(1);
