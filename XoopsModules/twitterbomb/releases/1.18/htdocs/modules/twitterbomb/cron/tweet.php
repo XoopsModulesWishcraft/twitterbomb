@@ -100,7 +100,7 @@ if ($xoConfig['cron_tweet']) {
 									}
 									$loop++;
 								}
-								
+								XoopsCache::write('tweetbomb_'.$campaign->getVar('type').'_'.md5($cid.$catid), $ret, $xoConfig['interval_of_cron']+$xoConfig['cache']);		
 								break;
 							case "scheduler":
 								$items=0;
@@ -155,9 +155,10 @@ if ($xoConfig['cron_tweet']) {
 									}
 									$loop++;
 								}
+								XoopsCache::write('tweetbomb_'.$campaign->getVar('type').'_'.md5($cid.$catid), $ret, $xoConfig['interval_of_cron']+$xoConfig['scheduler_cache']);
 								break;
 						}
-						XoopsCache::write('tweetbomb_'.$campaign->getVar('type').'_'.md5($cid.$catid), $ret, $xoConfig['interval_of_cron']);
+						
 					}
 				} else {
 					$campaign->setCron();
@@ -208,7 +209,7 @@ if ($xoConfig['cron_tweet']) {
 								}
 								$loop++;
 							}
-							
+							XoopsCache::write('tweetbomb_'.$campaign->getVar('type').'_'.md5($cid.$catid), $ret, $xoConfig['interval_of_cron']+$xoConfig['cache']);
 							break;
 						case "scheduler":
 							$items=0;
@@ -263,9 +264,9 @@ if ($xoConfig['cron_tweet']) {
 								}
 								$loop++;
 							}
+							XoopsCache::write('tweetbomb_'.$campaign->getVar('type').'_'.md5($cid.$catid), $ret, $xoConfig['interval_of_cron']+$xoConfig['scheduler_cache']);
 							break;
 					}
-					XoopsCache::write('tweetbomb_'.$campaign->getVar('type').'_'.md5($cid.$catid), $ret, $xoConfig['interval_of_cron']);
 				}
 			} else {
 				$cids[$cid] = $cid;
