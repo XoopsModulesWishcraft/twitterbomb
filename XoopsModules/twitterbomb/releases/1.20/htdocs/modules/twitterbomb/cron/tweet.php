@@ -120,7 +120,6 @@ if ($xoConfig['cron_tweet']||$xoConfig['cron_retweet']) {
 						   		
 							}
 							$loop++;
-							exit(0);
 						}
 						XoopsCache::write('tweetbomb_'.$campaign->getVar('type').'_'.md5($cid.$catid), $ret, $xoConfig['interval_of_cron']+$xoConfig['cache']);
 						break;
