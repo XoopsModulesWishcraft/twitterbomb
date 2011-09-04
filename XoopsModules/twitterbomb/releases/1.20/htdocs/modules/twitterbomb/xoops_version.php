@@ -84,6 +84,7 @@ $modversion['tables'][6] = "twitterbomb_scheduler";
 $modversion['tables'][7] = "twitterbomb_oauth";
 $modversion['tables'][8] = "twitterbomb_following";
 $modversion['tables'][9] = "twitterbomb_retweet";
+$modversion['tables'][10] = "twitterbomb_log";
 
 // Blocks
 $modversion['blocks'][1]['file'] = "twitterbomb_block_bomb.php";
