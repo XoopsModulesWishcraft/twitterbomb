@@ -87,7 +87,7 @@ class TwitterbombUsernames extends XoopsObject
 		switch ($this->getVar('type')) {
 			case 'bomb':
 			case 'scheduler':
-				$func = ucfirst($this->getVar('mode')).'InsertHook';
+				$func = ucfirst($this->getVar('type')).'InsertHook';
 				break;
 			default:
 				return false;
@@ -107,7 +107,7 @@ class TwitterbombUsernames extends XoopsObject
 		switch ($this->getVar('type')) {
 			case 'bomb':
 			case 'scheduler':
-				$func = ucfirst($this->getVar('mode')).'GetHook';
+				$func = ucfirst($this->getVar('type')).'GetHook';
 				break;
 			default:
 				return $this;
