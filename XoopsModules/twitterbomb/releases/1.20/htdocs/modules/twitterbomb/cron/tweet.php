@@ -210,7 +210,6 @@ if ($xoConfig['cron_tweet']||$xoConfig['cron_retweet']) {
 									    			$log->setVar('tags', twitterbomb_ExtractTags($tweet['text']));
 													$log = $log_handler->get($lid = $log_handler->insert($log, true));
 											   		if ($retweet = $oauth->sendRetweet($id, true)) {
-											   			echo __LINE__.'<br/>';
 											   			$retweet_handler->setReweeted($rid);
 											   			echo 'Retweet Sent: '.$id.' - '.$tweet['text']."\n";
 												   		if ($xoConfig['tags']) {

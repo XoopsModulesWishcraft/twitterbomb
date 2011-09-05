@@ -5,7 +5,7 @@ function b_twitterbomb_block_retweet_show( $options )
 	if (empty($options[0]))
 		return false;
 				
-	$campaign_handler =& xoops_getmodulehandler('campaign', 'twitterretweet');
+	$campaign_handler =& xoops_getmodulehandler('campaign', 'twitterbomb');
 	$campaign = $campaign_handler->get($options[0]);
 	$cid = $campaign->getVar('cid');
 	$catid = $campaign->getVar('catid');
@@ -54,7 +54,7 @@ function b_twitterbomb_block_retweet_show( $options )
 
 function b_twitterbomb_block_retweet_edit( $options )
 {
-	include_once($GLOBALS['xoops']->path('/modules/twitterretweet/include/formobjects.twitterretweet.php'));
+	include_once($GLOBALS['xoops']->path('/modules/twitterbomb/include/formobjects.twitterbomb.php'));
 
 	$campaign = new TwitterBombFormSelectCampaigns('', 'options[]', $options[0], 1, false, false, 'retweet');
 	$form = ""._BL_TWITTERBOMB_CID."&nbsp;".$campaign->render();
