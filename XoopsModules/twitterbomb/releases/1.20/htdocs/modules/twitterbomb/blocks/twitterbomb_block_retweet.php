@@ -1,6 +1,6 @@
 <?php
 
-function b_twitterretweet_block_retweet_show( $options )
+function b_twitterbomb_block_retweet_show( $options )
 {
 	if (empty($options[0]))
 		return false;
@@ -52,7 +52,7 @@ function b_twitterretweet_block_retweet_show( $options )
 }
 
 
-function b_twitterretweet_block_retweet_edit( $options )
+function b_twitterbomb_block_retweet_edit( $options )
 {
 	include_once($GLOBALS['xoops']->path('/modules/twitterretweet/include/formobjects.twitterretweet.php'));
 
