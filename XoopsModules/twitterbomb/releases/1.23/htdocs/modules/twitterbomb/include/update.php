@@ -53,7 +53,8 @@ function xoops_module_update_twitterbomb(&$module) {
 	$sql[] = "ALTER TABLE `".$GLOBALS['xoopsDB']->prefix('twitterbomb_base_matrix')."` CHANGE COLUMN `base7` `base7` ENUM('for','when','clause','then','over','under','their','there','trend','') DEFAULT ''";
 	
 	$sql[] = "ALTER TABLE `".$GLOBALS['xoopsDB']->prefix('twitterbomb_oauth')."` ADD COLUMN `id` VARCHAR(255) DEFAULT '0'";
-	
+	$sql[] = "ALTER TABLE `".$GLOBALS['xoopsDB']->prefix('twitterbomb_oauth')."` ADD COLUMN `friends` INT(13) UNSIGNED DEFAULT '0'";
+	$sql[] = "ALTER TABLE `".$GLOBALS['xoopsDB']->prefix('twitterbomb_oauth')."` ADD COLUMN `mentions` INT(13) UNSIGNED DEFAULT '0'";
 	
 $sql[] = "CREATE TABLE `".$GLOBALS['xoopsDB']->prefix('twitterbomb_scheduler')."` (
   `sid` INT(13) UNSIGNED NOT NULL AUTO_INCREMENT,

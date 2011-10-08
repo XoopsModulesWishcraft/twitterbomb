@@ -199,8 +199,10 @@ if ($xoConfig['cron_tweet']||$xoConfig['cron_retweet']) {
 							   		} else {
 							   			echo 'Tweet Failed: '.$tweet.' - '.$link.NLB;
 							   			$scheduler = $scheduler_handler->get($sentence['sid']);
-							   			$scheduler->setVar('when', 0);
-							   			$scheduler_handler->insert($scheduler);
+							   			if (is_object($scheduler)) {
+							   				$scheduler->setVar('when', 0);
+							   				$scheduler_handler->insert($scheduler);
+							   			}
 							   			@$log_handler->delete($log, true);
 							   			$loop = (((($xoConfig['tweets_per_session']+$xoConfig['retweets_per_session']))/$campaignCount)*(($xoConfig['items']+$xoConfig['scheduler_items']+$xoConfig['retweet_items'])/$xoConfig['scheduler_items']))*2+1;
 							   			$c=(($xoConfig['tweets_per_session']+$xoConfig['retweets_per_session']))+1;
