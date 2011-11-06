@@ -21,7 +21,7 @@
  * @since           2.0.0
  * @author          Kazumi Ono (AKA onokazu)
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
- * @version         $Id: search.php 5334 2010-09-18 23:55:54Z kris_fr $
+ * @version         $Id$
  * @todo            Modularize; Both search algorithms and interface will be redesigned
  */
 include '../../mainfile.php';
