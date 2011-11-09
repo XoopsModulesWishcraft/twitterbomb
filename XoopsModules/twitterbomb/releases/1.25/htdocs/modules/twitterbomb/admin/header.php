@@ -1,6 +1,6 @@
 <?php
 
-require_once (dirname(dirname(dirname(dirname(__FILE__)))).'/include/cp_header.php');
+	require_once (dirname(dirname(dirname(dirname(__FILE__)))).'/include/cp_header.php');
 	
 	if (!defined('_CHARSET'))
 		define ("_CHARSET","UTF-8");

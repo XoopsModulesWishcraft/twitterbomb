@@ -363,7 +363,9 @@
 	define('_AM_TWEETBOMB_ADMIN_THEREARE_LOGFIRSTSCHEDULE', 'First time in log Scheduler Happened: %s');
 	define('_AM_TWEETBOMB_ADMIN_THEREARE_LOGLASTRETWEET', 'Last time in log Retweet Happened: %s');
 	define('_AM_TWEETBOMB_ADMIN_THEREARE_LOGFIRSTRETWEET', 'First time in log Retweet Happened: %s');
-		
+	
+	// About
+	define('_AM_TWITTERBOMB_ABOUT_MAKEDONATE', 'Make a donation to chronolabs co-op');
 ?>
 	
 	
