@@ -1,4 +1,11 @@
 ========================================
+ 2012/01/09 14:00:00 Version 1.26 STABLE
+========================================
+ - Changed /admin/index.php - Fixed WSOD on Dashboard with $log[0]-getVar to ->getVar  (Wishcraft)
+ - Changed /include/function.php - Fixed twitterbomb_searchtwitter() Line 140 - 155 - Exceptions  (Wishcraft)
+ - Changed /cron/tweet.php - Changed Exceptions and Closure of Routine as well as population of $cids (Wishcraft)
+ 
+========================================
  2011/11/09 20:11:00 Version 1.25 STABLE
 ========================================
  - Changed $pathImageAdmin renamed to $GLOBALS['twitterbombImageAdmin']  (Wishcraft)

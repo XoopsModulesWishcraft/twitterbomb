@@ -29,24 +29,26 @@
 		    $scheduler_handler = xoops_getmodulehandler('scheduler', 'twitterbomb');
 		    $urls_handler = xoops_getmodulehandler('urls', 'twitterbomb');
 		    $usernames_handler = xoops_getmodulehandler('usernames', 'twitterbomb');
-		
+
 		 	$indexAdmin = new ModuleAdmin();	
 		    $indexAdmin->addInfoBox(_AM_TWEETBOMB_ADMIN_COUNTS);
 		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_CAMPAIGNSBOMB."</label>", $campaign_handler->getCount(new Criteria('`type`', 'bomb', '=')), 'Green');
 		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_CAMPAIGNSSCHEDULER."</label>", $campaign_handler->getCount(new Criteria('`type`', 'scheduler', '=')), 'Green');
 		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_CAMPAIGNSRETWEET."</label>", $campaign_handler->getCount(new Criteria('`type`', 'retweet', '=')), 'Green');
+
 		    $criteria_a = new CriteriaCompo(new Criteria('timed', '0'));
 			$criteria_b = new CriteriaCompo(new Criteria('timed', '1'));
 			$criteria_b->add(new Criteria('start', time(), '<'));
 			$criteria_b->add(new Criteria('end', time(), '>'));
 			$criteria = new CriteriaCompo($criteria_a);
 			$criteria->add($criteria_b, 'OR');
+
 		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_CAMPAIGNSACTIVE."</label>", $campaign_handler->getCount($criteria), 'Orange');
 		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_CAMPAIGNSINACTIVE."</label>", ($campaign_handler->getCount(NULL)-$campaign_handler->getCount($criteria)), 'Orange');
 		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_CATEGORIES."</label>", $category_handler->getCount(NULL), 'Green');
 		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_KEYWORDS."</label>", $keywords_handler->getCount(NULL), 'Green');
 			$indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_URLS."</label>", $urls_handler->getCount(NULL), 'Green');
-		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_RETWEETS."</label>", $retweet_handler->getCount(NULL), 'Green');		    
+		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_RETWEETS."</label>", $retweet_handler->getCount(NULL), 'Green');
 		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_SCHEDULERTOTAL."</label>", $scheduler_handler->getCount(NULL), 'Green');
 		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_SCHEDULERWAITING."</label>", $scheduler_handler->getCount(new Criteria('`tweeted`', '0', '=')), 'Green');
 		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_SCHEDULERTWEETED."</label>", $scheduler_handler->getCount(new Criteria('`tweeted`', '0', '!=')), 'Green');
@@ -54,20 +56,21 @@
 		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGBOMB."</label>", $log_handler->getCount(new Criteria('`provider`', 'bomb', '=')), 'Orange');
 		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGSCHEDULER."</label>", $log_handler->getCount(new Criteria('`provider`', 'scheduler', '=')), 'Orange');
 		    $indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGRETWEET."</label>", $log_handler->getCount(new Criteria('`provider`', 'retweet', '=')), 'Orange');
+
 		    $criteria = new CriteriaCompo(new Criteria('`provider`', 'bomb', '='));
 		    $criteria->setSort('`date`');
 		    $criteria->setOrder('DESC');
 		    $criteria->setLimit(1);
 		    $logs = $log_handler->getObjects($criteria, false);
 		    if (is_object($logs[0])) {
-		    	$indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGLASTBOMB."</label>", date(_DATESTRING, $logs[0]-getVar('date')), 'Green');
+		    	$indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGLASTBOMB."</label>", date(_DATESTRING, $logs[0]->getVar('date')), 'Green');
 			    $criteria = new CriteriaCompo(new Criteria('`provider`', 'bomb', '='));
 			    $criteria->setSort('`date`');
 			    $criteria->setOrder('ASC');
 			    $criteria->setLimit(1);
 			    $logs = $log_handler->getObjects($criteria, false);
 			    if (is_object($logs[0])) {
-			    	$indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGFIRSTBOMB."</label>", date(_DATESTRING, $logs[0]-getVar('date')), 'Green');
+			    	$indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGFIRSTBOMB."</label>", date(_DATESTRING, $logs[0]->getVar('date')), 'Green');
 			    }
 		    }
 			    		
@@ -77,14 +80,14 @@
 		    $criteria->setLimit(1);
 		    $logs = $log_handler->getObjects($criteria, false);
 		    if (is_object($logs[0])) {
-		    	$indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGLASTSCHEDULE."</label>", date(_DATESTRING, $logs[0]-getVar('date')), 'Green');
+		    	$indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGLASTSCHEDULE."</label>", date(_DATESTRING, $logs[0]->getVar('date')), 'Green');
 			    $criteria = new CriteriaCompo(new Criteria('`provider`', 'scheduler', '='));
 			    $criteria->setSort('`date`');
 			    $criteria->setOrder('ASC');
 			    $criteria->setLimit(1);
 			    $logs = $log_handler->getObjects($criteria, false);
 			    if (is_object($logs[0])) {
-			    	$indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGFIRSTSCHEDULE."</label>", date(_DATESTRING, $logs[0]-getVar('date')), 'Green');
+			    	$indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGFIRSTSCHEDULE."</label>", date(_DATESTRING, $logs[0]->getVar('date')), 'Green');
 			    }
 		    }
 
@@ -94,14 +97,14 @@
 		    $criteria->setLimit(1);
 		    $logs = $log_handler->getObjects($criteria, false);
 		    if (is_object($logs[0])) {
-		    	$indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGLASTRETWEET."</label>", date(_DATESTRING, $logs[0]-getVar('date')), 'Green');
+		    	$indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGLASTRETWEET."</label>", date(_DATESTRING, $logs[0]->getVar('date')), 'Green');
 			    $criteria = new CriteriaCompo(new Criteria('`provider`', 'retweet', '='));
 			    $criteria->setSort('`date`');
 			    $criteria->setOrder('ASC');
 			    $criteria->setLimit(1);
 			    $logs = $log_handler->getObjects($criteria, false);
 			    if (is_object($logs[0])) {
-			    	$indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGFIRSTRETWEET."</label>", date(_DATESTRING, $logs[0]-getVar('date')), 'Green');
+			    	$indexAdmin->addInfoBoxLine(_AM_TWEETBOMB_ADMIN_COUNTS, "<label>"._AM_TWEETBOMB_ADMIN_THEREARE_LOGFIRSTRETWEET."</label>", date(_DATESTRING, $logs[0]->getVar('date')), 'Green');
 			    }
 		    }
 		    
