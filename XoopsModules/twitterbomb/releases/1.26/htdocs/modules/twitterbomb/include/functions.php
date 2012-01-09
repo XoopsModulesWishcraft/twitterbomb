@@ -148,7 +148,11 @@ if (!function_exists("twitterbomb_searchtwitter")) {
 							elseif ($numberpositive>0&&$foundpos>0)
 								$pass=true;
 							elseif ($numbernegative>0&&$foundneg==0)
-								$pass=true;								
+								$pass=true;				
+							if ($foundneg>0&&$numbernegative>0)
+								$pass=false;
+							elseif ($foundpos==0&&$numberpositive>0)
+								$pass=false;
 						} else {
 							$pass=true;
 						}
