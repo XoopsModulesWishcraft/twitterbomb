@@ -137,7 +137,7 @@
 			for($key=0;$key<=4;$key++) {
 				switch ($key) {
 					case 2:
-						$donationform[$key] =  sprintf($donationform[$key], $GLOBALS['xoopsConfig']['sitename'] . ' - ' . (strlen($GLOBALS['xoopsUser']->getVar('name'))>0?$GLOBALS['xoopsUser']->getVar('name'). ' ['.$GLOBALS['xoopsUser']->getVar('uname').']':$GLOBALS['xoopsUser']->getVar('uname')), $GLOBALS['xoopsUser']->getVar('email'), XOOPS_LICENSE_KEY, strtoupper($GLOBALS['spidersModule']->getVar('dirname')),  strtoupper($GLOBALS['spidersModule']->getVar('dirname')). ' '.$GLOBALS['spidersModule']->getVar('name'));
+						$donationform[$key] =  sprintf($donationform[$key], $GLOBALS['xoopsConfig']['sitename'] . ' - ' . (strlen($GLOBALS['xoopsUser']->getVar('name'))>0?$GLOBALS['xoopsUser']->getVar('name'). ' ['.$GLOBALS['xoopsUser']->getVar('uname').']':$GLOBALS['xoopsUser']->getVar('uname')), $GLOBALS['xoopsUser']->getVar('email'), XOOPS_LICENSE_KEY, strtoupper($GLOBALS['twitterbombModule']->getVar('dirname')),  strtoupper($GLOBALS['twitterbombModule']->getVar('dirname')). ' '.$GLOBALS['twitterbombModule']->getVar('name'));
 						break;
 				}
 			}

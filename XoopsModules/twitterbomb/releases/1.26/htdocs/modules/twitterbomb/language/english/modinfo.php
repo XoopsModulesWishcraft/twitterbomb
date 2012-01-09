@@ -41,8 +41,8 @@
 	
 	// Version 1.05
 	//Preferences Definitions
-	define('_MI_TWEETBOMB_ANONYMOUS', 'Anonymous Guest can Submit Twitter Usernames?');
-	define('_MI_TWEETBOMB_ANONYMOUS_DESC', 'Allows anonymous guest to submit twitter usernames to campaigns and categories.');
+	define('_MI_TWEETBOMB_PREF_ANONYMOUS', 'Anonymous Guest can Submit Twitter Usernames?');
+	define('_MI_TWEETBOMB_PREF_ANONYMOUS_DESC', 'Allows anonymous guest to submit twitter usernames to campaigns and categories.');
 	define('_MI_TWEETBOMB_CACHE', 'Number of Seconds RSS Feed is cached!');
 	define('_MI_TWEETBOMB_CACHE_DESC', 'Total number of seconds the RSS Feed is cached for.');
 	
@@ -133,9 +133,6 @@
 	define('_MI_TWEETBOMB_ROOT_TWEETER_DESC', 'Your default twitter username for the basis of following etc. (without the @)');
 	define('_MI_TWEETBOMB_CRONTYPE', 'Cron execution type');
 	define('_MI_TWEETBOMB_CRONTYPE_DESC', 'This is the type of cron job that is being executed. If you have set up a cronjob as per INSTALL then please select either the \'cron job\' or \'scheduler\'.');
-	define('_MI_TWEETBOMB_CRONTYPE_PRELOADER', 'Preloader');
-	define('_MI_TWEETBOMB_CRONTYPE_CRONTAB', 'UNIX Cron Job');
-	define('_MI_TWEETBOMB_CRONTYPE_SCHEDULER', 'Windows Scheduled Task');
 	define('_MI_TWEETBOMB_INTERVAL_OF_CRON', 'Interval of Cron');
 	define('_MI_TWEETBOMB_INTERVAL_OF_CRON_DESC', 'This is the interval between executions of the cron job. (In Seconds)');
 	define('_MI_TWEETBOMB_RUNTIME_OF_CRON', 'Runtime of Cron');
@@ -151,9 +148,9 @@
 	
 	//Preference Options
 	define('_MI_TWEETBOMB_CRONTYPE_RSS', 'Aggregated Via RSS Feed');
-	define('_MI_TWEETBOMB_CRONTYPE_PRELOADER', 'Aggregated Via API & Preloader');
-	define('_MI_TWEETBOMB_CRONTYPE_CRONTAB', 'Aggregated Via API & Cron Job');
-	define('_MI_TWEETBOMB_CRONTYPE_SCHEDULER', 'Aggregated Via API & a Scheduled Task');
+	define('_MI_TWEETBOMB_CRONTYPE_PRELOADER', 'Preloader');
+	define('_MI_TWEETBOMB_CRONTYPE_CRONTAB', 'UNIX Cron Job');
+	define('_MI_TWEETBOMB_CRONTYPE_SCHEDULER', 'Windows Scheduled Task');
 	define('_MI_TWEETBOMB_CACHE_30SECONDS', 'Cache for 30 Seconds');
 	define('_MI_TWEETBOMB_CACHE_60SECONDS', 'Cache for 1 Minute');
 	define('_MI_TWEETBOMB_CACHE_120SECONDS', 'Cache for 2 Minutes');

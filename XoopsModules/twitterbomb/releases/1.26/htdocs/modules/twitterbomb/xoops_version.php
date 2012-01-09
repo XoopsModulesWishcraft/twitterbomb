@@ -307,8 +307,8 @@ $modversion['config'][$i]['default'] = 5;
 
 $i++;
 $modversion['config'][$i]['name'] = 'anonymous';
-$modversion['config'][$i]['title'] = "_MI_TWEETBOMB_ANONYMOUS";
-$modversion['config'][$i]['description'] = "_MI_TWEETBOMB_ANONYMOUS_DESC";
+$modversion['config'][$i]['title'] = "_MI_TWEETBOMB_PREF_ANONYMOUS";
+$modversion['config'][$i]['description'] = "_MI_TWEETBOMB_PREF_ANONYMOUS_DESC";
 $modversion['config'][$i]['formtype'] = 'yesno';
 $modversion['config'][$i]['valuetype'] = 'int';
 $modversion['config'][$i]['default'] = 0;
