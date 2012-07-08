@@ -555,6 +555,9 @@
 	define('_AM_TWEETBOMB_NEW_PICTURES_P', 'From here you can create or edit in full your picture search campaign node.');
 	
 	define('_AM_TWEETBOMB_FORM_DESC_PICIDS_CAMPAIGN', 'Picture Search Campaign Nodes');
+
+	define('_AM_TWEETBOMB_ADMIN_THEREARE_LOGLASTRETWEET', 'Last Retweet in Log: %s');
+	define('_AM_TWEETBOMB_ADMIN_THEREARE_LOGFIRSTRETWEET', 'First Retweet in Log: %s');
 	
 ?>
 	
