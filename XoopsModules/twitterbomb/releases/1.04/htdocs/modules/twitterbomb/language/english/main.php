@@ -1,22 +1,22 @@
 <?php
 
 	//Smarty Definitions
-	define('_MN_TWEETBOMB_CATEGORIES_H1', 'Categories');
-	define('_MN_TWEETBOMB_CATEGORIES_P', 'This is the categories that are visible!');
-	define('_MN_TWEETBOMB_CAMPAIGNS_H1', 'Campaigns');
-	define('_MN_TWEETBOMB_CAMPAIGNS_P', 'This is the twitter bomb campaigns in this category!');
-	define('_MN_TWEETBOMB_ADDUSERNAME_H1', 'Twitter Username');
-	define('_MN_TWEETBOMB_ADDUSERNAME_P', 'Add Twitter Username to either none or a category or campaign.');
+	define('_MN_TWEETBOMB_CATEGORIES_H1','Categories');
+	define('_MN_TWEETBOMB_CATEGORIES_P','This is the categories that are visible!');
+	define('_MN_TWEETBOMB_CAMPAIGNS_H1','Campaigns');
+	define('_MN_TWEETBOMB_CAMPAIGNS_P','This is the twitter bomb campaigns in this category!');
+	define('_MN_TWEETBOMB_ADDUSERNAME_H1','Twitter Username');
+	define('_MN_TWEETBOMB_ADDUSERNAME_P','Add Twitter Username to either none or a category or campaign.');
 
 	//Form Definitions
-	define('_MN_TWEETBOMB_FORM_ISNEW_USERNAMES', 'New Twitter Username');
-	define('_MN_TWEETBOMB_FORM_CID_USERNAMES', 'Apply in Campaign');
-	define('_MN_TWEETBOMB_FORM_DESC_CID_USERNAMES', '');
-	define('_MN_TWEETBOMB_FORM_CATID_USERNAMES', 'Apply in Category');
-	define('_MN_TWEETBOMB_FORM_DESC_CATID_USERNAMES', '');
-	define('_MN_TWEETBOMB_FORM_USERNAME_USERNAMES', 'Twitter Username');
-	define('_MN_TWEETBOMB_FORM_DESC_USERNAME_USERNAMES', '');
+	define('_MN_TWEETBOMB_FORM_ISNEW_USERNAMES','New Twitter Username');
+	define('_MN_TWEETBOMB_FORM_CID_USERNAMES','Apply in Campaign');
+	define('_MN_TWEETBOMB_FORM_DESC_CID_USERNAMES','');
+	define('_MN_TWEETBOMB_FORM_CATID_USERNAMES','Apply in Category');
+	define('_MN_TWEETBOMB_FORM_DESC_CATID_USERNAMES','');
+	define('_MN_TWEETBOMB_FORM_USERNAME_USERNAMES','Twitter Username');
+	define('_MN_TWEETBOMB_FORM_DESC_USERNAME_USERNAMES','');
 
 	//Messages Definitions
-	define('_MN_MSG_USERNAMES_SAVED', 'New Twitter Username Saved');
+	define('_MN_MSG_USERNAMES_SAVED','New Twitter Username Saved');
 ?>
